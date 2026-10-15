@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OptiMOB</title>
+<meta name="description" content="Blocos paramétricos de marcenaria para SketchUp. Do modelo 3D ao plano de corte CNC.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyLjAiIGZpbGw9IiMxQjFFMUUiLz48Y2lyY2xlIGN4PSI1MC4wIiBjeT0iNDAuMCIgcj0iMjcuMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRUVGMEVBIiBzdHJva2Utd2lkdGg9IjcuOCIvPjxyZWN0IHg9IjQ1LjcxIiB5PSIzNS43MSIgd2lkdGg9IjguNTgiIGhlaWdodD0iOC41OCIgZmlsbD0iIzNBQTBGRiIvPjxyZWN0IHg9IjIwLjAiIHk9IjgxLjUiIHdpZHRoPSI0Ny4wIiBoZWlnaHQ9IjUuMCIgZmlsbD0iIzNBQTBGRiIvPjxyZWN0IHg9IjIwLjAiIHk9Ijc4LjU0IiB3aWR0aD0iNS4wIiBoZWlnaHQ9IjEwLjkyIiBmaWxsPSIjM0FBMEZGIi8+PHJlY3QgeD0iNjcuMCIgeT0iNzcuNSIgd2lkdGg9IjEzLjAiIGhlaWdodD0iMTMuMCIgZmlsbD0iIzNBQTBGRiIvPjwvc3ZnPg==">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>/* Layout: página em faixas sobre grelha técnica; o configurador é uma "janela de software" no topo.
+   Tema único escuro (a marca vive sobre Grafite). */
+:root{
+  --graphite:#1B1E1E;   /* fundo principal */
+  --carbon:#111313;     /* fundo profundo, painéis */
+  --steel:#2A2F30;      /* linhas e divisões */
+  --ash:#8A918F;        /* texto secundário */
+  --bone:#EEF0EA;       /* texto principal */
+  --blue:#3AA0FF;       /* Azul Parâmetro: ação, valores, puxadores */
+  --blue-a:rgba(58,160,255,.10);
+  --grid:rgba(238,240,234,.045);
+  --grid-b:rgba(58,160,255,.07);
+  --label-bg:#F6F7F3;
+  --label-ink:#1B1E1E;
+  --display:"Inter","Inter Display",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--graphite);color:var(--bone);font-family:var(--display);font-size:16px;line-height:1.55;
+  font-optical-sizing:auto;-webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:64px 64px}
+svg{display:block}
+a{color:inherit}
+.mono{font-family:var(--mono)}
+.blue{color:var(--blue)}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:720px){.wrap{padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+
+h1,h2,h3{font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance}
+h1{font-size:clamp(2.6rem,6.4vw,5.6rem);font-weight:650}
+h2{font-size:clamp(1.9rem,3.6vw,3rem)}
+h3{font-size:1.35rem;letter-spacing:-.02em}
+p{margin:0}
+.eyebrow{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--blue);margin:0 0 20px;display:flex;align-items:center;gap:10px}
+.sq{display:inline-block;width:8px;height:8px;background:var(--blue)}
+.lead{font-size:clamp(1.05rem,1.5vw,1.25rem);color:var(--ash);max-width:60ch;margin-top:24px}
+
+/* botões */
+.btn{font:600 .9rem/1 var(--display);text-decoration:none;padding:12px 18px;border:1px solid var(--blue);display:inline-flex;align-items:center;gap:10px;cursor:pointer;white-space:nowrap}
+.btn-solid{background:var(--blue);color:var(--graphite)}
+.btn-solid:hover{background:var(--bone);border-color:var(--bone)}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(17,19,19,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--steel)}
+.nav-in{display:flex;align-items:center;gap:32px;height:64px}
+.nav-logo{width:118px;flex:none}
+.nav-links{display:flex;gap:28px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;margin-left:auto}
+.nav-links a{text-decoration:none;color:var(--ash)}
+.nav-links a:hover{color:var(--bone)}
+.nav-cta{padding:10px 14px;font-size:.82rem}
+@media (max-width:860px){.nav-links{display:none}.nav-cta{margin-left:auto}}
+
+/* hero */
+.hero{padding-block:72px 96px}
+.hero-head{max-width:900px;margin-bottom:56px}
+
+/* janela da app */
+.app{background:var(--carbon);border:1px solid var(--steel);box-shadow:0 40px 90px rgba(0,0,0,.45)}
+.app-bar{display:flex;align-items:center;gap:14px;height:42px;padding:0 16px;border-bottom:1px solid var(--steel);background:#151717}
+.dots{display:flex;gap:7px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--steel)}
+.app-file{font-size:.72rem;color:var(--ash);letter-spacing:.08em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.chip{white-space:nowrap;flex:none;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--steel);padding:5px 9px;display:inline-flex;align-items:center;gap:7px}
+.chip-live{margin-left:auto;color:var(--blue);border-color:rgba(58,160,255,.45)}
+.chip-live i{width:6px;height:6px;background:var(--blue);animation:blink 1.6s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+
+.app-grid{display:grid;grid-template-columns:300px minmax(0,1fr);grid-template-areas:"params view" "nest list"}
+.params{grid-area:params;padding:22px 22px 26px;border-right:1px solid var(--steel);display:flex;flex-direction:column;gap:18px;background:var(--graphite)}
+.view{grid-area:view;position:relative;min-height:540px;overflow:hidden;display:flex;flex-direction:column}
+.nest{grid-area:nest;border-top:1px solid var(--steel);border-right:1px solid var(--steel);min-width:0;background:var(--graphite)}
+.list{grid-area:list;border-top:1px solid var(--steel);min-width:0}
+.app-grid{grid-template-columns:300px minmax(0,1fr)}
+@media (min-width:1101px){
+  .app-grid{grid-template-columns:300px minmax(0,1.1fr) minmax(0,1fr);grid-template-areas:"params view view" "nest nest list"}
+}
+@media (max-width:1100px){.app-grid{grid-template-areas:"params view" "nest nest" "list list"}.nest{border-right:0}}
+@media (max-width:760px){
+  .app-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"view" "params" "nest" "list"}
+  .params{border-right:0;border-top:1px solid var(--steel)}
+  .view{min-height:400px}
+}
+
+.params-h,.panel-h>span:first-child{font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ash)}
+.field{display:flex;flex-direction:column;gap:8px;border:0;margin:0;padding:0;min-width:0}
+.field label,.field legend{display:flex;justify-content:space-between;align-items:baseline;font-size:.85rem;color:var(--bone);padding:0;width:100%}
+.field output{font-size:.95rem;font-weight:500;color:var(--bone);font-variant-numeric:tabular-nums}
+.field output small{font-size:.68rem;color:var(--ash);margin-left:3px}
+.field legend{margin-bottom:8px}
+
+/* slider da marca: trilho fino, preenchimento azul, puxador quadrado */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:16px;background:transparent;margin:0;cursor:pointer;--p:50%}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,var(--blue) 0 var(--p),var(--steel) var(--p) 100%)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-6px;background:var(--blue);border:0;border-radius:0;box-shadow:0 0 0 3px var(--graphite)}
+input[type=range]::-moz-range-track{height:2px;background:var(--steel)}
+input[type=range]::-moz-range-progress{height:2px;background:var(--blue)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--blue);border:0;border-radius:0;box-shadow:0 0 0 3px var(--graphite)}
+input[type=range]:focus-visible{outline-offset:4px}
+
+.seg{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--steel)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{display:flex;justify-content:center;padding:8px 0;font-size:.82rem;color:var(--ash);cursor:pointer;border-right:1px solid var(--steel)}
+.seg label:last-of-type{border-right:0}
+.seg input:checked+label{background:var(--blue);color:var(--graphite);font-weight:700}
+.seg input:focus-visible+label{outline:2px solid var(--blue);outline-offset:-2px}
+.toggles{display:flex;gap:22px;flex-wrap:wrap}
+.tg{display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer}
+.tg input{position:absolute;opacity:0;pointer-events:none}
+.tg-box{width:16px;height:16px;border:1px solid var(--ash);display:grid;place-items:center}
+.tg input:checked+.tg-box{border-color:var(--blue)}
+.tg input:checked+.tg-box::after{content:"";width:8px;height:8px;background:var(--blue)}
+.tg input:focus-visible+.tg-box{outline:2px solid var(--blue);outline-offset:2px}
+
+.view-grid{position:absolute;inset:0;background-image:linear-gradient(var(--grid-b) 1px,transparent 1px),linear-gradient(90deg,var(--grid-b) 1px,transparent 1px);background-size:16px 16px;-webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse at 50% 45%,#000 30%,transparent 80%)}
+.view-tag{position:absolute;left:16px;top:16px;z-index:2;font-size:.66rem;letter-spacing:.18em;background:var(--graphite);border:1px solid var(--steel);padding:6px 10px;display:flex;align-items:center;gap:8px}
+.view-tag i{width:6px;height:6px;background:var(--blue)}
+.view-svg{position:relative;flex:1;display:flex;align-items:center;justify-content:center;padding:56px 24px 8px;min-height:0}
+.view-svg svg{width:100%;height:100%;max-height:520px}
+.stats{position:relative;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--steel);background:var(--carbon)}
+.stats div{padding:14px 16px;border-right:1px solid var(--steel);min-width:0}
+.stats div:last-child{border-right:0}
+.stats span{display:block;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
+.stats b{font-size:clamp(1.15rem,2vw,1.6rem);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+@media (max-width:460px){.stats{grid-template-columns:repeat(2,1fr)}.stats div:nth-child(2){border-right:0}.stats div:nth-child(-n+2){border-bottom:1px solid var(--steel)}}
+
+.panel-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--steel)}
+.dim{font-size:.68rem;letter-spacing:.14em;color:var(--ash)}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tabs button{font:500 .68rem var(--mono);letter-spacing:.12em;color:var(--ash);background:transparent;border:1px solid var(--steel);padding:5px 9px;cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--graphite);background:var(--blue);border-color:var(--blue)}
+.nest-svg{padding:18px}
+.nest-svg svg{width:100%;height:auto}
+.table-wrap{max-height:420px;overflow:auto}
+.cut{width:100%;border-collapse:collapse;font-size:.76rem;font-variant-numeric:tabular-nums}
+.cut th{position:sticky;top:0;background:var(--carbon);text-align:left;font-weight:500;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ash);padding:10px 14px;border-bottom:1px solid var(--steel)}
+.cut td{padding:9px 14px;border-bottom:1px solid rgba(42,47,48,.7);white-space:nowrap}
+.cut td:first-child{color:var(--blue)}
+.cut .r{text-align:right}
+.cut tr.aux td{color:var(--ash)}
+.cut tr.aux td:first-child{color:var(--ash)}
+
+/* faixas */
+.band{padding-block:112px;border-top:1px solid var(--steel)}
+.sec-head{max-width:760px;margin-bottom:56px}
+.sec-head.split{max-width:none;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap}
+.sec-head.split>div{max-width:720px}
+.sec-note{color:var(--ash);max-width:34ch}
+
+/* processo: sequência real, por isso numerada */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--steel)}
+.steps li{padding:32px 30px 30px;border-right:1px solid var(--steel);display:flex;flex-direction:column;gap:14px;position:relative;background:var(--graphite)}
+.steps li:last-child{border-right:0}
+.step-n{font-size:.74rem;color:var(--blue);letter-spacing:.2em}
+.steps p{color:var(--ash);font-size:.98rem}
+.step-tag{margin-top:auto;align-self:flex-start;font-size:.72rem;letter-spacing:.16em;border:1px solid var(--steel);padding:6px 10px}
+.step-tag.on{background:var(--blue);border-color:var(--blue);color:var(--graphite);font-weight:700}
+.steps li:not(:last-child)::after{content:"";position:absolute;right:-6px;top:38px;width:11px;height:11px;background:var(--blue);z-index:1}
+@media (max-width:820px){.steps{grid-template-columns:minmax(0,1fr)}.steps li{border-right:0;border-bottom:1px solid var(--steel)}.steps li:last-child{border-bottom:0}.steps li:not(:last-child)::after{right:auto;left:30px;top:auto;bottom:-6px}}
+
+/* funcionalidades */
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--steel);border:1px solid var(--steel)}
+.feat{background:var(--graphite);padding:30px 28px 32px;display:flex;flex-direction:column;gap:12px}
+.feat .ic{width:44px;height:44px;margin-bottom:10px}
+.feat h3{font-size:1.15rem}
+.feat p{color:var(--ash);font-size:.95rem}
+@media (max-width:900px){.feats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.feats{grid-template-columns:minmax(0,1fr)}}
+
+/* biblioteca */
+.lib{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.lib-card{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;border:1px solid var(--steel);background:var(--carbon);transition:border-color .2s}
+.lib-card:hover,.lib-card:focus-visible{border-color:var(--blue)}
+.lib-card:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.lib-draw{aspect-ratio:4/3;max-width:100%;padding:18px 26px;position:relative;background-image:linear-gradient(var(--grid-b) 1px,transparent 1px),linear-gradient(90deg,var(--grid-b) 1px,transparent 1px);background-size:16px 16px}
+.lib-draw svg{width:100%;height:100%}
+.lib-meta{border-top:1px solid var(--steel);padding:16px 18px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.lib-meta b{display:block;font-size:1.05rem;font-weight:600;letter-spacing:-.01em}
+.lib-meta span{font-size:.7rem;color:var(--ash);letter-spacing:.06em}
+.lib-go{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);white-space:nowrap}
+@media (max-width:900px){.lib{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.lib{grid-template-columns:minmax(0,1fr)}}
+
+/* oficina */
+.shop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:72px;align-items:center}
+.shop-txt h2{margin-bottom:22px}
+.shop-txt>p:not(.eyebrow){color:var(--ash);font-size:1.05rem;max-width:52ch}
+.shop-list{list-style:none;padding:0;margin:32px 0 0;display:flex;flex-direction:column;font-size:.8rem;letter-spacing:.04em}
+.shop-list li{display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid var(--steel)}
+.shop-list li:last-child{border-bottom:1px solid var(--steel)}
+.shop-list i{width:7px;height:7px;background:var(--blue);flex:none}
+.labels{position:relative;display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.tag{background:var(--label-bg);color:var(--label-ink);width:min(86%,460px);padding:18px 20px 24px;position:relative;box-shadow:0 24px 50px rgba(0,0,0,.45);font-family:var(--mono)}
+.tag:nth-child(1){transform:rotate(-1.6deg)}
+.tag:nth-child(2){transform:rotate(1.4deg);margin-left:12%}
+.tag:nth-child(3){transform:rotate(-.6deg);margin-left:4%}
+.tag-h{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--label-ink);padding-bottom:10px;gap:10px}
+.tag-h .tl{width:96px}
+.tag-h b{font-size:.82rem}
+.tag-b{display:flex;gap:16px;margin-top:14px}
+.tag-q{width:78px;height:78px;flex:none}
+.tag-d{display:grid;grid-template-columns:auto 1fr;column-gap:14px;row-gap:3px;font-size:.74rem;align-content:start;min-width:0}
+.tag-d span{color:#7b827f;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding-top:2px}
+.tag-d em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag-bar{position:absolute;left:20px;right:20px;bottom:9px;height:2px;background:var(--label-ink)}
+.tag-bar::before{content:"";position:absolute;left:0;top:-3px;width:2px;height:8px;background:var(--label-ink)}
+.tag-bar::after{content:"";position:absolute;right:0;top:-3px;width:8px;height:8px;background:var(--label-ink)}
+@media (max-width:900px){.shop{grid-template-columns:minmax(0,1fr);gap:56px}}
+
+/* CTA */
+.cta{border-top:1px solid var(--steel);padding-block:120px;background:radial-gradient(ellipse 60% 70% at 50% 40%,rgba(58,160,255,.09),transparent 70%)}
+.cta-in{display:flex;flex-direction:column;align-items:center;text-align:center}
+.cta-logo{width:min(380px,80%);margin-bottom:56px}
+.cta h2{max-width:18ch}
+.cta-in>p{color:var(--ash);max-width:52ch;margin-top:20px;font-size:1.05rem}
+.mail{display:flex;align-items:stretch;margin-top:36px;border:1px solid var(--steel);max-width:100%;flex-wrap:wrap}
+.mail span{padding:12px 18px;font-size:.95rem;user-select:all;display:flex;align-items:center;min-width:0;overflow-wrap:anywhere}
+.copied{font-size:.72rem;letter-spacing:.16em;color:var(--blue);min-height:1.4em;margin-top:14px}
+
+/* rodapé */
+.foot{border-top:1px solid var(--steel);background:var(--carbon)}
+.foot-in{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding-block:28px}
+.foot-brand{display:flex;align-items:center;gap:14px}
+.foot-brand svg{width:40px;height:40px}
+.foot-brand b{display:block;font-weight:600}
+.foot-brand span,.foot-c{font-size:.66rem;letter-spacing:.16em;color:var(--ash);text-transform:uppercase}
+
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.chip-live i{animation:none}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="nav-logo" href="#topo" aria-label="OptiMOB — início"><svg role="img" aria-label="OptiMOB" xmlns="http://www.w3.org/2000/svg" viewBox="90 -0 8132 2030"><path fill="#EEF0EA" d="M767.0 1584.0C1162.0 1584.0 1444.0 1263.0 1444.0 816.0C1444.0 367.0 1162.0 46.0 767.0 46.0C372.0 46.0 90.0 367.0 90.0 816.0C90.0 1263.0 372.0 1584.0 767.0 1584.0ZM767.0 1416.0C496.0 1416.0 270.0 1202.0 270.0 816.0C270.0 428.0 496.0 214.0 767.0 214.0C1037.0 214.0 1264.0 428.0 1264.0 816.0C1264.0 1202.0 1037.0 1416.0 767.0 1416.0Z"/>
+<path fill="#EEF0EA" d="M1628.0 1978.0H1798.0V1400.0H1800.0C1876.0 1522.0 1993.0 1580.0 2130.0 1580.0C2405.0 1580.0 2588.0 1357.0 2588.0 1032.0C2588.0 706.0 2405.0 484.0 2130.0 484.0C1993.0 484.0 1864.0 542.0 1796.0 660.0H1794.0V504.0H1628.0ZM2104.0 1427.0C1908.0 1427.0 1784.0 1271.0 1784.0 1032.0C1784.0 793.0 1908.0 636.0 2104.0 636.0C2287.0 636.0 2416.0 773.0 2416.0 1032.0C2416.0 1291.0 2287.0 1427.0 2104.0 1427.0Z"/>
+<path fill="#EEF0EA" d="M3205.0 504.0H2991.0V216.0H2821.0V504.0H2633.0V650.0H2821.0V1322.0C2821.0 1481.0 2910.0 1560.0 3091.0 1560.0H3205.0V1414.0H3107.0C3020.0 1414.0 2991.0 1386.0 2991.0 1304.0V650.0H3205.0Z"/>
+<path fill="#EEF0EA" d="M3359.0 1560.0H3529.0V504.0H3359.0Z"/>
+<path fill="#3AA0FF" d="M3790.0 1560.0H4092.0V852.0C4092.0 753.0 4087.0 586.0 4083.0 428.0C4134.0 595.0 4184.0 760.0 4215.0 852.0L4470.0 1560.0H4720.0L4972.0 852.0C5004.0 757.0 5056.0 581.0 5107.0 407.0C5103.0 571.0 5097.0 748.0 5097.0 852.0V1560.0H5398.0V70.0H4949.0L4706.0 764.0C4679.0 852.0 4632.0 1009.0 4596.0 1137.0C4560.0 1009.0 4513.0 852.0 4485.0 764.0L4239.0 70.0H3790.0Z"/>
+<path fill="#3AA0FF" d="M6236.0 1584.0C6637.0 1584.0 6939.0 1290.0 6939.0 816.0C6939.0 341.0 6637.0 46.0 6236.0 46.0C5835.0 46.0 5534.0 341.0 5534.0 816.0C5534.0 1288.0 5835.0 1584.0 6236.0 1584.0ZM6236.0 1312.0C6006.0 1312.0 5844.0 1132.0 5844.0 816.0C5844.0 498.0 6006.0 318.0 6236.0 318.0C6466.0 318.0 6629.0 498.0 6629.0 816.0C6629.0 1132.0 6466.0 1312.0 6236.0 1312.0Z"/>
+<path fill="#3AA0FF" d="M7069.0 1560.0H7700.0C8039.0 1560.0 8222.0 1389.0 8222.0 1140.0C8222.0 928.0 8082.0 800.0 7900.0 783.0V781.0C8064.0 740.0 8167.0 625.0 8167.0 453.0C8167.0 224.0 7987.0 70.0 7666.0 70.0H7069.0ZM7370.0 1318.0V921.0H7662.0C7817.0 921.0 7908.0 999.0 7908.0 1123.0C7908.0 1247.0 7815.0 1318.0 7657.0 1318.0ZM7370.0 689.0V312.0H7643.0C7778.0 312.0 7861.0 385.0 7861.0 501.0C7861.0 616.0 7778.0 689.0 7643.0 689.0Z"/>
+<rect fill="#3AA0FF" x="3348.8" y="79.6" width="190.4" height="190.4"/></svg></a>
+    <nav class="nav-links mono" aria-label="Secções">
+      <a href="#configurador">Configurador</a>
+      <a href="#processo">Processo</a>
+      <a href="#funcionalidades">Funcionalidades</a>
+      <a href="#biblioteca">Biblioteca</a>
+    </nav>
+    <a class="btn btn-solid nav-cta" href="#acesso">Acesso antecipado</a>
+  </div>
+</header>
+
+<main id="topo">
+  <!-- HERO + CONFIGURADOR -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-head">
+        <p class="eyebrow mono"><i class="sq"></i>Extensão para SketchUp · v1.0</p>
+        <h1>Do modelo ao corte,<br>em <span class="blue">um parâmetro.</span></h1>
+        <p class="lead">Blocos paramétricos de marcenaria que calculam peças, orlas e chapas enquanto desenha. Mexa nas medidas abaixo e veja o OptiMOB a trabalhar.</p>
+      </div>
+
+      <div class="app" id="configurador">
+        <div class="app-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="mono app-file" id="appFile">ROUPEIRO_2M.skp</span>
+          <span class="chip chip-live mono"><i></i>Ao vivo</span>
+        </div>
+
+        <div class="app-grid">
+          <!-- Parâmetros -->
+          <form class="params" id="params" aria-label="Parâmetros do módulo">
+            <div class="params-h mono">Parâmetros</div>
+            <div class="field">
+              <label for="pL"><span>Largura</span><output id="oL" class="mono"></output></label>
+              <input type="range" id="pL" min="300" max="2700" step="10" value="1800">
+            </div>
+            <div class="field">
+              <label for="pA"><span>Altura</span><output id="oA" class="mono"></output></label>
+              <input type="range" id="pA" min="400" max="2600" step="10" value="2400">
+            </div>
+            <div class="field">
+              <label for="pP"><span>Profundidade</span><output id="oP" class="mono"></output></label>
+              <input type="range" id="pP" min="250" max="650" step="10" value="580">
+            </div>
+            <div class="field">
+              <label for="pM"><span>Módulos</span><output id="oM" class="mono"></output></label>
+              <input type="range" id="pM" min="1" max="4" step="1" value="2">
+            </div>
+            <div class="field">
+              <label for="pN"><span>Prateleiras por módulo</span><output id="oN" class="mono"></output></label>
+              <input type="range" id="pN" min="0" max="8" step="1" value="4">
+            </div>
+            <fieldset class="field seg-field">
+              <legend>Espessura da chapa</legend>
+              <div class="seg" role="radiogroup">
+                <input type="radio" name="pE" id="pE16" value="16"><label for="pE16" class="mono">16</label>
+                <input type="radio" name="pE" id="pE18" value="18" checked><label for="pE18" class="mono">18</label>
+                <input type="radio" name="pE" id="pE19" value="19"><label for="pE19" class="mono">19</label>
+                <input type="radio" name="pE" id="pE25" value="25"><label for="pE25" class="mono">25</label>
+              </div>
+            </fieldset>
+            <div class="toggles">
+              <label class="tg" for="pDoors"><input type="checkbox" id="pDoors" checked><span class="tg-box"></span>Portas</label>
+              <label class="tg" for="pPlinth"><input type="checkbox" id="pPlinth" checked><span class="tg-box"></span>Rodapé</label>
+            </div>
+          </form>
+
+          <!-- Desenho -->
+          <div class="view">
+            <div class="view-grid" aria-hidden="true"></div>
+            <div class="view-tag mono"><i></i><span id="viewTag">ROUPEIRO_2M</span></div>
+            <div class="view-svg" id="drawing" role="img" aria-label="Desenho isométrico do módulo com cotas"></div>
+            <div class="stats">
+              <div><span class="mono">Peças</span><b id="sPecas">—</b></div>
+              <div><span class="mono">Chapas</span><b id="sChapas">—</b></div>
+              <div><span class="mono">Aproveitamento</span><b id="sAprov" class="blue">—</b></div>
+              <div><span class="mono">Orla</span><b id="sOrla">—</b></div>
+            </div>
+          </div>
+
+          <!-- Plano de corte -->
+          <div class="nest">
+            <div class="panel-h">
+              <span class="mono">Plano de corte · chapa 2750 × 1830</span>
+              <div class="tabs" id="sheetTabs" role="tablist" aria-label="Chapas"></div>
+            </div>
+            <div class="nest-svg" id="nesting" role="img" aria-label="Distribuição das peças na chapa"></div>
+          </div>
+
+          <!-- Lista de corte -->
+          <div class="list">
+            <div class="panel-h"><span class="mono">Lista de corte</span><span class="mono dim" id="listMat">MDF 18 mm</span></div>
+            <div class="table-wrap">
+              <table class="cut mono" id="cutList">
+                <thead><tr><th>Cód.</th><th>Peça</th><th class="r">Qtd</th><th class="r">C × L (mm)</th><th class="r">Orla</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESSO -->
+  <section class="band" id="processo">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow mono">Processo</p>
+        <h2>Três passos entre a ideia e a máquina.</h2>
+      </div>
+      <ol class="steps">
+        <li>
+          <span class="step-n mono">01</span>
+          <h3>Modelar</h3>
+          <p>Insira um bloco OptiMOB no seu modelo SketchUp. Roupeiros, cozinhas, estantes e móveis de TV já vêm construídos como em oficina.</p>
+          <div class="step-tag mono">3D</div>
+        </li>
+        <li>
+          <span class="step-n mono">02</span>
+          <h3>Parametrizar</h3>
+          <p>Ajuste largura, altura, divisões, prateleiras e espessura. Cada peça interna recalcula a sua medida, encaixe e orla.</p>
+          <div class="step-tag mono on">PARAM</div>
+        </li>
+        <li>
+          <span class="step-n mono">03</span>
+          <h3>Cortar</h3>
+          <p>Gere a lista de corte, o plano de nesting por chapa e as etiquetas de cada peça, prontos para a seccionadora ou para a CNC.</p>
+          <div class="step-tag mono">CNC</div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- FUNCIONALIDADES -->
+  <section class="band" id="funcionalidades">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow mono">Funcionalidades</p>
+        <h2>Tudo o que a marcenaria calcula à mão, calculado por si.</h2>
+      </div>
+      <div class="feats" id="feats"></div>
+    </div>
+  </section>
+
+  <!-- BIBLIOTECA -->
+  <section class="band" id="biblioteca">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div>
+          <p class="eyebrow mono">Biblioteca de blocos</p>
+          <h2>Comece de um módulo que já funciona.</h2>
+        </div>
+        <p class="sec-note">Escolha um bloco para o abrir no configurador lá em cima.</p>
+      </div>
+      <div class="lib" id="lib"></div>
+    </div>
+  </section>
+
+  <!-- OFICINA -->
+  <section class="band" id="oficina">
+    <div class="wrap shop">
+      <div class="shop-txt">
+        <p class="eyebrow mono">Na oficina</p>
+        <h2>Cada peça sai identificada.</h2>
+        <p>O OptiMOB imprime uma etiqueta por peça: módulo, nome, medidas finais e lados com orla. Quem monta não precisa de abrir o desenho para saber onde cada peça vai.</p>
+        <ul class="shop-list mono">
+          <li><i></i>Lista de corte em CSV para a seccionadora</li>
+          <li><i></i>Plano de nesting por chapa</li>
+          <li><i></i>Etiquetas de peça com código de rastreio</li>
+          <li><i></i>Resumo de material e orla para orçamento</li>
+        </ul>
+      </div>
+      <div class="labels" id="labels" aria-label="Etiquetas de peça geradas a partir do configurador"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="acesso">
+    <div class="wrap cta-in">
+      <div class="cta-logo"><svg role="img" aria-label="OptiMOB" xmlns="http://www.w3.org/2000/svg" viewBox="90 -0 8132 2268"><path fill="#EEF0EA" d="M767.0 1584.0C1162.0 1584.0 1444.0 1263.0 1444.0 816.0C1444.0 367.0 1162.0 46.0 767.0 46.0C372.0 46.0 90.0 367.0 90.0 816.0C90.0 1263.0 372.0 1584.0 767.0 1584.0ZM767.0 1416.0C496.0 1416.0 270.0 1202.0 270.0 816.0C270.0 428.0 496.0 214.0 767.0 214.0C1037.0 214.0 1264.0 428.0 1264.0 816.0C1264.0 1202.0 1037.0 1416.0 767.0 1416.0Z"/>
+<path fill="#EEF0EA" d="M1628.0 1978.0H1798.0V1400.0H1800.0C1876.0 1522.0 1993.0 1580.0 2130.0 1580.0C2405.0 1580.0 2588.0 1357.0 2588.0 1032.0C2588.0 706.0 2405.0 484.0 2130.0 484.0C1993.0 484.0 1864.0 542.0 1796.0 660.0H1794.0V504.0H1628.0ZM2104.0 1427.0C1908.0 1427.0 1784.0 1271.0 1784.0 1032.0C1784.0 793.0 1908.0 636.0 2104.0 636.0C2287.0 636.0 2416.0 773.0 2416.0 1032.0C2416.0 1291.0 2287.0 1427.0 2104.0 1427.0Z"/>
+<path fill="#EEF0EA" d="M3205.0 504.0H2991.0V216.0H2821.0V504.0H2633.0V650.0H2821.0V1322.0C2821.0 1481.0 2910.0 1560.0 3091.0 1560.0H3205.0V1414.0H3107.0C3020.0 1414.0 2991.0 1386.0 2991.0 1304.0V650.0H3205.0Z"/>
+<path fill="#EEF0EA" d="M3359.0 1560.0H3529.0V504.0H3359.0Z"/>
+<path fill="#3AA0FF" d="M3790.0 1560.0H4092.0V852.0C4092.0 753.0 4087.0 586.0 4083.0 428.0C4134.0 595.0 4184.0 760.0 4215.0 852.0L4470.0 1560.0H4720.0L4972.0 852.0C5004.0 757.0 5056.0 581.0 5107.0 407.0C5103.0 571.0 5097.0 748.0 5097.0 852.0V1560.0H5398.0V70.0H4949.0L4706.0 764.0C4679.0 852.0 4632.0 1009.0 4596.0 1137.0C4560.0 1009.0 4513.0 852.0 4485.0 764.0L4239.0 70.0H3790.0Z"/>
+<path fill="#3AA0FF" d="M6236.0 1584.0C6637.0 1584.0 6939.0 1290.0 6939.0 816.0C6939.0 341.0 6637.0 46.0 6236.0 46.0C5835.0 46.0 5534.0 341.0 5534.0 816.0C5534.0 1288.0 5835.0 1584.0 6236.0 1584.0ZM6236.0 1312.0C6006.0 1312.0 5844.0 1132.0 5844.0 816.0C5844.0 498.0 6006.0 318.0 6236.0 318.0C6466.0 318.0 6629.0 498.0 6629.0 816.0C6629.0 1132.0 6466.0 1312.0 6236.0 1312.0Z"/>
+<path fill="#3AA0FF" d="M7069.0 1560.0H7700.0C8039.0 1560.0 8222.0 1389.0 8222.0 1140.0C8222.0 928.0 8082.0 800.0 7900.0 783.0V781.0C8064.0 740.0 8167.0 625.0 8167.0 453.0C8167.0 224.0 7987.0 70.0 7666.0 70.0H7069.0ZM7370.0 1318.0V921.0H7662.0C7817.0 921.0 7908.0 999.0 7908.0 1123.0C7908.0 1247.0 7815.0 1318.0 7657.0 1318.0ZM7370.0 689.0V312.0H7643.0C7778.0 312.0 7861.0 385.0 7861.0 501.0C7861.0 616.0 7778.0 689.0 7643.0 689.0Z"/>
+<rect fill="#3AA0FF" x="3348.8" y="79.6" width="190.4" height="190.4"/>
+<rect fill="#3AA0FF" x="3790.0" y="2109.8" width="4208.5" height="92.4"/>
+<rect fill="#3AA0FF" x="3790.0" y="2062.1" width="92.4" height="187.7"/>
+<rect fill="#3AA0FF" x="7998.5" y="2044.2" width="223.5" height="223.5"/></svg></div>
+      <h2>Acesso antecipado à versão 1.0.</h2>
+      <p>O OptiMOB chega em breve à Extension Warehouse. Escreva-nos para entrar no grupo de oficinas que testa a primeira versão.</p>
+      <div class="mail">
+        <span class="mono" id="mailAddr">ola@optimob.design</span>
+        <button type="button" class="btn btn-solid" id="copyMail">Copiar email</button>
+      </div>
+      <p class="mono copied" id="copiedMsg" aria-live="polite"></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand"><svg role="img" aria-label="OptiMOB" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50.0" cy="40.0" r="27.0" fill="none" stroke="#EEF0EA" stroke-width="7.8"/><rect x="45.71" y="35.71" width="8.58" height="8.58" fill="#3AA0FF"/><rect x="20.0" y="81.5" width="47.0" height="5.0" fill="#3AA0FF"/><rect x="20.0" y="78.54" width="5.0" height="10.92" fill="#3AA0FF"/><rect x="67.0" y="77.5" width="13.0" height="13.0" fill="#3AA0FF"/></svg><div><b>OptiMOB</b><span class="mono">Furniture Design System · SketchUp Extension</span></div></div>
+    <span class="mono foot-c">© 2026 OptiMOB</span>
+  </div>
+</footer>
+
+<script>/* OptiMOB — configurador paramétrico (desenho, lista de corte, nesting, etiquetas). Sem dependências. */
+(function () {
+  'use strict';
+
+  var C = { blue: '#3AA0FF', bone: '#EEF0EA', ash: '#8A918F', steel: '#2A2F30', graphite: '#1B1E1E' };
+  var SHEET = { W: 2750, H: 1830, kerf: 4, trim: 10 };
+  var NS = 'http://www.w3.org/2000/svg';
+
+  // ---------- estado ----------
+  var PRESETS = {
+    roupeiro: { name: 'Roupeiro 2 módulos', file: 'ROUPEIRO_2M', L: 1800, A: 2400, P: 580, M: 2, N: 4, E: 18, doors: true, plinth: true },
+    base: { name: 'Base de cozinha', file: 'COZINHA_BASE_80', L: 800, A: 720, P: 560, M: 1, N: 1, E: 18, doors: true, plinth: true },
+    aereo: { name: 'Módulo aéreo', file: 'COZINHA_AEREO_90', L: 900, A: 700, P: 330, M: 1, N: 2, E: 16, doors: true, plinth: false },
+    estante: { name: 'Estante aberta', file: 'ESTANTE_120', L: 1200, A: 1800, P: 320, M: 2, N: 5, E: 18, doors: false, plinth: true },
+    tv: { name: 'Móvel de TV', file: 'MOVEL_TV_200', L: 2000, A: 500, P: 420, M: 3, N: 0, E: 19, doors: true, plinth: true },
+    sapateira: { name: 'Sapateira', file: 'SAPATEIRA_90', L: 900, A: 1100, P: 350, M: 1, N: 6, E: 16, doors: true, plinth: true }
+  };
+  var state = Object.assign({}, PRESETS.roupeiro);
+  var activeSheet = 0;
+
+  // ---------- geometria ----------
+  // projecção dimétrica: frente dominante, profundidade a subir para a direita
+  function pr(x, y, z) { return [x * 0.94 + y * 0.62, x * 0.24 - y * 0.40 - z]; }
+
+  function compute(s) {
+    var E = s.E, L = s.L, A = s.A, P = s.P, M = s.M, N = s.N;
+    var R = s.plinth ? 80 : 0;
+    var w = (L - 2 * E - (M - 1) * E) / M;           // vão interior de cada módulo
+    var hin = A - R - 2 * E;                            // altura interior
+    var dpm = s.doors ? (w > 600 ? 2 : 1) : 0;         // portas por módulo
+    var nd = M * dpm;
+    var parts = [
+      { code: 'LAT', name: 'Lateral', q: 2, c: A, l: P, orla: A },
+      { code: 'TPO', name: 'Tampo', q: 1, c: L - 2 * E, l: P, orla: L - 2 * E },
+      { code: 'BAS', name: 'Base', q: 1, c: L - 2 * E, l: P, orla: L - 2 * E }
+    ];
+    if (M > 1) parts.push({ code: 'DIV', name: 'Divisória', q: M - 1, c: hin, l: P - 2, orla: hin });
+    if (N > 0) parts.push({ code: 'PRT', name: 'Prateleira', q: M * N, c: Math.round(w - 2), l: P - 22, orla: Math.round(w - 2) });
+    if (R) parts.push({ code: 'ROD', name: 'Rodapé', q: 1, c: L - 2 * E, l: R, orla: L - 2 * E });
+    if (nd) {
+      var dw = Math.round(L / nd - 3), dh = A - R - 3;
+      parts.push({ code: 'POR', name: 'Porta', q: nd, c: dh, l: dw, orla: 2 * (dw + dh) });
+    }
+    parts.forEach(function (p) { p.c = Math.round(p.c); p.l = Math.round(p.l); });
+    var fundo = { code: 'FUN', name: 'Fundo HDF 3 mm', q: 1, c: Math.round(A - R - 4), l: Math.round(L - 4), orla: 0, aux: true };
+    var orla = parts.reduce(function (t, p) { return t + p.q * p.orla; }, 0) / 1000;
+    var nest = pack(parts);
+    var pecas = parts.reduce(function (t, p) { return t + p.q; }, 0) + 1;
+    return { R: R, w: w, dpm: dpm, parts: parts, fundo: fundo, orla: orla, nest: nest, pecas: pecas };
+  }
+
+  // nesting MaxRects (encostado à esquerda), rotação livre, espessura de serra e refilo
+  function pack(parts) {
+    var k = SHEET.kerf, W = SHEET.W - 2 * SHEET.trim + k, H = SHEET.H - 2 * SHEET.trim + k;
+    var items = [];
+    parts.forEach(function (p) {
+      for (var i = 0; i < p.q; i++) items.push({ code: p.code, idx: i + 1, w: p.c + k, h: p.l + k });
+    });
+    items.sort(function (x, y) { return (y.w * y.h - x.w * x.h) || (Math.max(y.w, y.h) - Math.max(x.w, x.h)); });
+    var sheets = [];
+    function newSheet() { var s = { free: [{ x: 0, y: 0, w: W, h: H }], parts: [] }; sheets.push(s); return s; }
+    function fit(free, w, h) {
+      var best = null;
+      free.forEach(function (f) {
+        [[w, h], [h, w]].forEach(function (o) {
+          if (o[0] <= f.w && o[1] <= f.h) {
+            // encosta à esquerda: menor aresta direita, depois mais acima, depois melhor encaixe
+            var right = f.x + o[0], ss = Math.min(f.w - o[0], f.h - o[1]);
+            if (!best || right < best.right || (right === best.right && (f.y < best.y || (f.y === best.y && ss < best.ss))))
+              best = { x: f.x, y: f.y, w: o[0], h: o[1], right: right, ss: ss };
+          }
+        });
+      });
+      return best;
+    }
+    function place(sh, r) {
+      var out = [];
+      sh.free.forEach(function (f) {
+        if (r.x >= f.x + f.w || r.x + r.w <= f.x || r.y >= f.y + f.h || r.y + r.h <= f.y) { out.push(f); return; }
+        if (r.x > f.x) out.push({ x: f.x, y: f.y, w: r.x - f.x, h: f.h });
+        if (r.x + r.w < f.x + f.w) out.push({ x: r.x + r.w, y: f.y, w: f.x + f.w - r.x - r.w, h: f.h });
+        if (r.y > f.y) out.push({ x: f.x, y: f.y, w: f.w, h: r.y - f.y });
+        if (r.y + r.h < f.y + f.h) out.push({ x: f.x, y: r.y + r.h, w: f.w, h: f.y + f.h - r.y - r.h });
+      });
+      sh.free = out.filter(function (a, i) {
+        return !out.some(function (b, j) {
+          return i !== j && a.x >= b.x && a.y >= b.y && a.x + a.w <= b.x + b.w && a.y + a.h <= b.y + b.h && (j < i || a.w !== b.w || a.h !== b.h || a.x !== b.x || a.y !== b.y);
+        });
+      });
+    }
+    items.forEach(function (it) {
+      var spot = null, sh = null;
+      for (var i = 0; i < sheets.length && !spot; i++) { spot = fit(sheets[i].free, it.w, it.h); sh = sheets[i]; }
+      if (!spot) { sh = newSheet(); spot = fit(sh.free, it.w, it.h); }
+      if (!spot) return; // peça maior que a chapa: fica fora do plano
+      place(sh, spot);
+      sh.parts.push({ code: it.code, idx: it.idx, x: spot.x, y: spot.y, w: spot.w - k, h: spot.h - k });
+    });
+    var area = 0, SW = SHEET.W, SH = SHEET.H, t = SHEET.trim;
+    sheets.forEach(function (s) { s.area = s.parts.reduce(function (a, p) { return a + p.w * p.h; }, 0); area += s.area; });
+    // a última chapa só conta até onde foi cortada; o resto é sobra reutilizável
+    var consumed = sheets.length * SW * SH;
+    var last = sheets[sheets.length - 1];
+    if (last && last.parts.length) {
+      var ex = t + Math.max.apply(null, last.parts.map(function (p) { return p.x + p.w; })) + k;
+      var ey = t + Math.max.apply(null, last.parts.map(function (p) { return p.y + p.h; })) + k;
+      var sx = (SW - ex) * SH, sy = (SH - ey) * SW;
+      if (sx >= sy && SW - ex >= 300) last.sobra = { x: ex, y: 0, w: SW - ex, h: SH };
+      else if (SH - ey >= 300) last.sobra = { x: 0, y: ey, w: SW, h: SH - ey };
+      if (last.sobra) consumed -= last.sobra.w * last.sobra.h;
+    }
+    return { sheets: sheets, yield: area / consumed };
+  }
+
+  // ---------- desenho isométrico ----------
+  function drawCabinet(s, r, opt) {
+    opt = opt || {};
+    var dims = opt.dims !== false;
+    var L = s.L, A = s.A, P = s.P, E = s.E, R = r.R;
+    var out = [];
+    var pts = [];
+    function P2(x, y, z) { var q = pr(x, y, z); pts.push(q); return q; }
+    function line(a, b, col, sw, dash) {
+      var p = P2(a[0], a[1], a[2]), q = P2(b[0], b[1], b[2]);
+      out.push('<line x1="' + p[0].toFixed(1) + '" y1="' + p[1].toFixed(1) + '" x2="' + q[0].toFixed(1) + '" y2="' + q[1].toFixed(1) +
+        '" stroke="' + col + '" stroke-width="' + sw + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + ' vector-effect="non-scaling-stroke"/>');
+    }
+    function poly(list, fill, stroke, sw) {
+      var d = list.map(function (v) { var q = P2(v[0], v[1], v[2]); return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ');
+      out.push('<polygon points="' + d + '" fill="' + fill + '"' + (stroke ? ' stroke="' + stroke + '" stroke-width="' + sw + '" vector-effect="non-scaling-stroke"' : '') + '/>');
+    }
+    var main = opt.main || C.blue, sub = opt.sub || C.ash;
+    // faces visíveis com leve preenchimento
+    poly([[0, 0, A], [L, 0, A], [L, P, A], [0, P, A]], 'rgba(58,160,255,.06)');
+    poly([[L, 0, 0], [L, P, 0], [L, P, A], [L, 0, A]], 'rgba(58,160,255,.11)');
+    // arestas ocultas
+    line([0, P, 0], [0, P, A], sub, 0.8, '3 4');
+    line([0, P, 0], [L, P, 0], sub, 0.8, '3 4');
+    line([0, 0, 0], [0, P, 0], sub, 0.8, '3 4');
+    // interior visto de frente
+    var inner = s.doors ? sub : main, innerW = s.doors ? 0.7 : 1.1, innerD = s.doors ? '3 4' : null;
+    line([E, 0, R], [E, 0, A - E], inner, innerW, innerD);
+    line([L - E, 0, R], [L - E, 0, A - E], inner, innerW, innerD);
+    line([E, 0, A - E], [L - E, 0, A - E], inner, innerW, innerD);
+    line([E, 0, R + E], [L - E, 0, R + E], inner, innerW, innerD);
+    if (R) line([0, 0, R], [L, 0, R], main, 1.1);
+    var x0 = E;
+    for (var m = 0; m < s.M; m++) {
+      var xa = x0, xb = x0 + r.w;
+      for (var n = 1; n <= s.N; n++) {
+        var z = R + E + n * (A - R - 2 * E) / (s.N + 1);
+        line([xa, 0, z], [xb, 0, z], s.doors ? sub : C.bone, s.doors ? 0.6 : 0.9, s.doors ? '2 4' : null);
+        if (!s.doors) line([xa, 0, z], [xa, P * 0.85, z], sub, 0.5, '2 4');
+      }
+      if (m < s.M - 1) {
+        line([xb, 0, R + E], [xb, 0, A - E], inner, innerW, innerD);
+        line([xb + E, 0, R + E], [xb + E, 0, A - E], inner, innerW, innerD);
+      }
+      x0 = xb + E;
+    }
+    // portas
+    if (s.doors) {
+      var nd = s.M * r.dpm, dw = L / nd;
+      for (var d = 0; d < nd; d++) {
+        var a = d * dw + 1.5, b = (d + 1) * dw - 1.5, zb = R + 1.5, zt = A - 1.5;
+        poly([[a, -1, zb], [b, -1, zb], [b, -1, zt], [a, -1, zt]], 'rgba(58,160,255,.07)', main, 1.1);
+        // puxador quadrado no lado de abertura
+        var hx = (d % 2 === 0 && nd > 1) ? b - 40 : a + 40;
+        if (nd === 1) hx = b - 40;
+        var hz = A > 1200 ? R + (A - R) * 0.5 : zt - 60;
+        var c = pr(hx, -1, hz), sz = Math.max(18, Math.min(L, A) * 0.022);
+        out.push('<rect x="' + (c[0] - sz / 2).toFixed(1) + '" y="' + (c[1] - sz / 2).toFixed(1) + '" width="' + sz.toFixed(1) + '" height="' + sz.toFixed(1) + '" fill="' + main + '"/>');
+      }
+    }
+    // caixa exterior visível
+    var ext = [[[0, 0, 0], [L, 0, 0]], [[L, 0, 0], [L, 0, A]], [[L, 0, A], [0, 0, A]], [[0, 0, A], [0, 0, 0]],
+      [[0, 0, A], [0, P, A]], [[L, 0, A], [L, P, A]], [[0, P, A], [L, P, A]], [[L, P, A], [L, P, 0]], [[L, 0, 0], [L, P, 0]]];
+    ext.forEach(function (e) { line(e[0], e[1], main, 1.6); });
+
+    // cotas
+    var span = Math.max(L * 0.94 + P * 0.62, A + L * 0.24 + P * 0.4);
+    var fs = span * 0.032, tk = fs * 0.36;
+    if (dims) {
+      var off = fs * 2.2;
+      dimLine(pr(0, 0, 0), pr(L, 0, 0), 0, off, 'L ' + L);
+      var a1 = pr(0, 0, 0), a2 = pr(0, 0, A);
+      dimLine(a1, a2, -off, 0, 'A ' + A, true);
+      dimLine(pr(L, 0, 0), pr(L, P, 0), off * 0.7, off * 0.7, 'P ' + P);
+    }
+    function dimLine(p, q, ox, oy, txt, vertical) {
+      var x1 = p[0] + ox, y1 = p[1] + oy, x2 = q[0] + ox, y2 = q[1] + oy;
+      pts.push([x1, y1], [x2, y2]);
+      out.push('<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="' + C.bone + '" stroke-width="0.8" vector-effect="non-scaling-stroke"/>');
+      [[x1, y1], [x2, y2]].forEach(function (t) {
+        out.push('<rect x="' + (t[0] - tk).toFixed(1) + '" y="' + (t[1] - tk).toFixed(1) + '" width="' + (2 * tk).toFixed(1) + '" height="' + (2 * tk).toFixed(1) + '" fill="' + C.blue + '"/>');
+      });
+      var mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      var ang = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+      if (vertical) ang = -90;
+      if (ang > 90) ang -= 180; if (ang < -90) ang += 180;
+      var dy = -fs * 0.55;
+      var tx = mx + (vertical ? dy : 0), ty = my + (vertical ? 0 : dy);
+      if (!vertical) { var rad = ang * Math.PI / 180; tx = mx + Math.sin(rad) * fs * 0.55; ty = my - Math.cos(rad) * fs * 0.55; }
+      var tw = txt.length * fs * 0.62;
+      pts.push([tx - tw / 2, ty - fs], [tx + tw / 2, ty + fs]);
+      out.push('<text x="' + tx.toFixed(1) + '" y="' + ty.toFixed(1) + '" fill="' + C.bone + '" font-family="JetBrains Mono, monospace" font-size="' + fs.toFixed(1) +
+        '" text-anchor="middle" transform="rotate(' + ang.toFixed(1) + ' ' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ')">' + txt + '</text>');
+    }
+    var xs = pts.map(function (p) { return p[0]; }), ys = pts.map(function (p) { return p[1]; });
+    var minx = Math.min.apply(null, xs), maxx = Math.max.apply(null, xs), miny = Math.min.apply(null, ys), maxy = Math.max.apply(null, ys);
+    var pad = span * (opt.pad || 0.04);
+    return '<svg xmlns="' + NS + '" viewBox="' + (minx - pad).toFixed(0) + ' ' + (miny - pad).toFixed(0) + ' ' + (maxx - minx + 2 * pad).toFixed(0) + ' ' + (maxy - miny + 2 * pad).toFixed(0) +
+      '" preserveAspectRatio="xMidYMid meet">' + out.join('') + '</svg>';
+  }
+
+  // ---------- nesting SVG ----------
+  function drawSheet(sh, opt) {
+    opt = opt || {};
+    var W = SHEET.W, H = SHEET.H, t = SHEET.trim;
+    var o = ['<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="rgba(238,240,234,.025)" stroke="' + C.ash + '" stroke-width="1" stroke-dasharray="6 5" vector-effect="non-scaling-stroke"/>'];
+    sh.parts.forEach(function (p) {
+      var x = p.x + t, y = p.y + t;
+      o.push('<rect x="' + x + '" y="' + y + '" width="' + p.w + '" height="' + p.h + '" fill="rgba(58,160,255,.13)" stroke="' + C.blue + '" stroke-width="1" vector-effect="non-scaling-stroke"/>');
+      if (opt.labels !== false && p.w > 300 && p.h > 140) {
+        var fsz = Math.min(46, p.h * 0.28);
+        o.push('<text x="' + (x + 22) + '" y="' + (y + 22 + fsz) + '" fill="' + C.blue + '" font-family="JetBrains Mono, monospace" font-size="' + fsz.toFixed(0) + '">' + p.code + '·' + p.idx + '</text>');
+        if (p.h > 220 && p.w > 520) o.push('<text x="' + (x + 22) + '" y="' + (y + 30 + fsz * 2.1) + '" fill="' + C.ash + '" font-family="JetBrains Mono, monospace" font-size="' + (fsz * 0.78).toFixed(0) + '">' + p.w + '×' + p.h + '</text>');
+      }
+    });
+    if (sh.sobra) {
+      var so = sh.sobra;
+      o.push('<defs><pattern id="hatch" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="28" stroke="' + C.steel + '" stroke-width="8"/></pattern></defs>');
+      o.push('<rect x="' + so.x + '" y="' + so.y + '" width="' + so.w + '" height="' + so.h + '" fill="url(#hatch)"/>');
+      var lx = so.x + so.w / 2, ly = so.y + so.h / 2;
+      o.push('<text x="' + lx + '" y="' + (ly - 6) + '" fill="' + C.ash + '" font-family="JetBrains Mono, monospace" font-size="44" text-anchor="middle">SOBRA</text>');
+      o.push('<text x="' + lx + '" y="' + (ly + 48) + '" fill="' + C.ash + '" font-family="JetBrains Mono, monospace" font-size="38" text-anchor="middle">' + so.w + ' × ' + so.h + '</text>');
+    }
+    var pct = Math.round(sh.area / ((W * H) - (sh.sobra ? sh.sobra.w * sh.sobra.h : 0)) * 100);
+    o.push('<text x="0" y="' + (H + 66) + '" fill="' + C.ash + '" font-family="JetBrains Mono, monospace" font-size="42">' + sh.parts.length + ' peças · ' + pct + '% de aproveitamento</text>');
+    o.push('<text x="' + W + '" y="' + (H + 66) + '" fill="' + C.ash + '" font-family="JetBrains Mono, monospace" font-size="42" text-anchor="end">serra ' + SHEET.kerf + ' mm · refilo ' + SHEET.trim + ' mm</text>');
+    return '<svg xmlns="' + NS + '" viewBox="-6 -6 ' + (W + 12) + ' ' + (H + 96) + '">' + o.join('') + '</svg>';
+  }
+
+  // ---------- UI ----------
+  var $ = function (id) { return document.getElementById(id); };
+  var inputs = { L: $('pL'), A: $('pA'), P: $('pP'), M: $('pM'), N: $('pN') };
+  var units = { L: 'mm', A: 'mm', P: 'mm', M: 'un', N: 'un' };
+  var fmt = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
+
+  function syncInputs() {
+    Object.keys(inputs).forEach(function (k) {
+      var el = inputs[k];
+      el.value = state[k];
+      el.style.setProperty('--p', ((el.value - el.min) / (el.max - el.min) * 100) + '%');
+      $('o' + k).innerHTML = fmt(state[k]) + '<small>' + units[k] + '</small>';
+    });
+    var r = document.querySelector('input[name=pE][value="' + state.E + '"]'); if (r) r.checked = true;
+    $('pDoors').checked = state.doors; $('pPlinth').checked = state.plinth;
+  }
+
+  function render() {
+    var r = compute(state);
+    $('drawing').innerHTML = drawCabinet(state, r);
+    $('sPecas').textContent = r.pecas;
+    $('sChapas').textContent = r.nest.sheets.length;
+    $('sAprov').textContent = (r.nest.yield * 100).toFixed(1).replace('.', ',') + '%';
+    $('sOrla').textContent = r.orla.toFixed(1).replace('.', ',') + ' m';
+    $('appFile').textContent = state.file + '.skp — OptiMOB';
+    $('viewTag').textContent = state.file + ' · ' + r.pecas + ' peças';
+    $('listMat').textContent = 'MDF ' + state.E + ' mm';
+    // lista
+    var rows = r.parts.concat([r.fundo]).map(function (p) {
+      return '<tr' + (p.aux ? ' class="aux"' : '') + '><td>' + p.code + '</td><td>' + p.name + '</td><td class="r">' + p.q + '</td><td class="r">' + fmt(p.c) + ' × ' + fmt(p.l) +
+        '</td><td class="r">' + (p.orla ? (p.q * p.orla / 1000).toFixed(2).replace('.', ',') + ' m' : '—') + '</td></tr>';
+    }).join('');
+    document.querySelector('#cutList tbody').innerHTML = rows;
+    // chapas
+    if (activeSheet >= r.nest.sheets.length) activeSheet = 0;
+    var tabs = $('sheetTabs');
+    tabs.innerHTML = r.nest.sheets.map(function (s, i) {
+      return '<button type="button" role="tab" aria-selected="' + (i === activeSheet) + '" data-i="' + i + '">Chapa ' + (i + 1) + '</button>';
+    }).join('');
+    $('nesting').innerHTML = drawSheet(r.nest.sheets[activeSheet]);
+    renderLabels(r);
+    current = r;
+  }
+  var current = null;
+
+  $('sheetTabs').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    activeSheet = +b.dataset.i; render();
+  });
+
+  Object.keys(inputs).forEach(function (k) {
+    inputs[k].addEventListener('input', function () {
+      state[k] = +this.value;
+      if (state.file.indexOf('_CUSTOM') < 0) state.file = state.file.split('_')[0] + '_CUSTOM';
+      syncInputs(); render();
+    });
+  });
+  document.querySelectorAll('input[name=pE]').forEach(function (el) {
+    el.addEventListener('change', function () { state.E = +this.value; render(); });
+  });
+  $('pDoors').addEventListener('change', function () { state.doors = this.checked; render(); });
+  $('pPlinth').addEventListener('change', function () { state.plinth = this.checked; render(); });
+  $('params').addEventListener('submit', function (e) { e.preventDefault(); });
+
+  // ---------- funcionalidades ----------
+  var ICONS = {
+    blocos: '<rect x="10" y="8" width="28" height="32"/><line x1="10" y1="20" x2="38" y2="20"/><line x1="24" y1="20" x2="24" y2="40"/>',
+    param: '<line x1="8" y1="16" x2="40" y2="16"/><rect x="26" y="12" width="8" height="8" data-a/><line x1="8" y1="32" x2="40" y2="32"/><rect x="14" y="28" width="8" height="8"/>',
+    nesting: '<rect x="7" y="9" width="34" height="30" stroke-dasharray="3 3"/><rect x="11" y="13" width="12" height="10" data-a/><rect x="26" y="13" width="11" height="22"/><rect x="11" y="26" width="12" height="9"/>',
+    orla: '<rect x="10" y="10" width="28" height="28"/><line x1="10" y1="10" x2="38" y2="10" stroke-width="5" data-s/><line x1="38" y1="10" x2="38" y2="38" stroke-width="5" data-s/>',
+    orca: '<rect x="11" y="7" width="26" height="34"/><line x1="16" y1="16" x2="32" y2="16"/><line x1="16" y1="23" x2="32" y2="23"/><line x1="16" y1="30" x2="25" y2="30"/><rect x="28" y="28" width="5" height="5" data-a/>',
+    cnc: '<rect x="8" y="22" width="32" height="18"/><line x1="24" y1="6" x2="24" y2="28"/><polyline points="17,13 24,6 31,13"/><rect x="21" y="30" width="6" height="6" data-a/>'
+  };
+  function icon(body) {
+    body = body.replace(/data-a/g, 'fill="' + C.blue + '" stroke="' + C.blue + '"').replace(/data-s/g, 'stroke="' + C.blue + '"');
+    return '<svg viewBox="0 0 48 48" fill="none" stroke="' + C.bone + '" stroke-width="2.2" stroke-linecap="square" aria-hidden="true">' + body + '</svg>';
+  }
+  var FEATS = [
+    ['blocos', 'Blocos paramétricos', 'Módulos construídos com laterais, tampo, base, divisórias e prateleiras reais. Cada peça sabe a sua espessura e o seu encaixe.'],
+    ['param', 'Ajuste por valores', 'Altere largura, altura, profundidade ou número de vãos e o módulo recalcula todas as peças internas de uma vez.'],
+    ['nesting', 'Plano de corte', 'Distribui as peças pelas chapas com espessura de serra e margem de refilo, e mostra o aproveitamento de cada chapa.'],
+    ['orla', 'Orlas por peça', 'Indica que lados de cada peça levam orla e soma os metros lineares de orla do projeto inteiro.'],
+    ['orca', 'Base para orçamento', 'Resume chapas, orla, ferragens e peças num quadro pronto para levar para o orçamento.'],
+    ['cnc', 'Saída para a oficina', 'Exporta a lista de corte e as etiquetas de peça para a seccionadora, a CNC ou a impressora.']
+  ];
+  $('feats').innerHTML = FEATS.map(function (f) {
+    return '<article class="feat"><div class="ic">' + icon(ICONS[f[0]]) + '</div><h3>' + f[1] + '</h3><p>' + f[2] + '</p></article>';
+  }).join('');
+
+  // ---------- biblioteca ----------
+  var libEl = $('lib');
+  libEl.innerHTML = Object.keys(PRESETS).map(function (k) {
+    var p = PRESETS[k], r = compute(p);
+    return '<button type="button" class="lib-card" data-k="' + k + '"><div class="lib-draw">' + drawCabinet(p, r, { dims: false, pad: 0.06 }) + '</div>' +
+      '<div class="lib-meta"><div><b>' + p.name + '</b><span class="mono">' + p.L + ' × ' + p.A + ' × ' + p.P + ' · ' + r.pecas + ' peças</span></div><span class="mono lib-go">Abrir →</span></div></button>';
+  }).join('');
+  libEl.addEventListener('click', function (e) {
+    var b = e.target.closest('.lib-card'); if (!b) return;
+    state = Object.assign({}, PRESETS[b.dataset.k]); activeSheet = 0;
+    syncInputs(); render();
+    $('configurador').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  // ---------- etiquetas ----------
+  var LOGO_TAG = document.querySelector('.nav-logo svg');
+  function qr(seed) {
+    var n = 21, o = '', s = seed;
+    function rnd() { s = (s * 9301 + 49297) % 233280; return s / 233280; }
+    function finder(x, y) { return '<rect x="' + x + '" y="' + y + '" width="7" height="7"/><rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="5" height="5" fill="#F6F7F3"/><rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="3" height="3"/>'; }
+    for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) {
+      if ((i < 8 && j < 8) || (i < 8 && j > n - 9) || (i > n - 9 && j < 8)) continue;
+      if (rnd() < 0.47) o += '<rect x="' + i + '" y="' + j + '" width="1.02" height="1.02"/>';
+    }
+    return '<svg viewBox="0 0 21 21" fill="#1B1E1E" shape-rendering="crispEdges" aria-hidden="true">' + o + finder(0, 0) + finder(14, 0) + finder(0, 14) + '</svg>';
+  }
+  function renderLabels(r) {
+    var pick = ['LAT', 'PRT', 'POR'], total = r.pecas, out = '', k = 0;
+    var map = {}; r.parts.forEach(function (p) { map[p.code] = p; });
+    var order = r.parts.map(function (p) { return p.code; });
+    pick.filter(function (c) { return map[c]; }).concat(['TPO']).slice(0, 3).forEach(function (code) {
+      var p = map[code]; k++;
+      var num = 1; for (var i = 0; i < order.indexOf(code); i++) num += r.parts[i].q;
+      var logo = LOGO_TAG ? LOGO_TAG.outerHTML.replace(/fill="#[0-9A-Fa-f]{6}"/g, 'fill="#1B1E1E"') : 'OptiMOB';
+      out += '<div class="tag"><div class="tag-h"><div class="tl">' + logo + '</div><b>P' + String(num).padStart(2, '0') + ' / ' + total + '</b></div>' +
+        '<div class="tag-b"><div class="tag-q">' + qr(num * 7 + p.c) + '</div><div class="tag-d">' +
+        '<span>Módulo</span><em>' + state.file + '</em><span>Peça</span><em>' + p.name + '</em><span>Dim.</span><em>' + fmt(p.c) + ' × ' + fmt(p.l) + ' × ' + state.E + '</em>' +
+        '<span>Orla</span><em>' + (code === 'POR' ? '▮ ▮ ▮ ▮' : '▮ ▯ ▯ ▯') + '</em></div></div><div class="tag-bar"></div></div>';
+    });
+    $('labels').innerHTML = out;
+  }
+
+  // ---------- email ----------
+  $('copyMail').addEventListener('click', function () {
+    var addr = $('mailAddr').textContent, msg = $('copiedMsg');
+    function fallback() {
+      var range = document.createRange(); range.selectNodeContents($('mailAddr'));
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+      msg.textContent = 'Email selecionado — use Ctrl+C para copiar';
+    }
+    try {
+      navigator.clipboard.writeText(addr).then(function () { msg.textContent = 'Email copiado'; }, fallback);
+    } catch (e) { fallback(); }
+  });
+
+  syncInputs(); render();
+})();
+</script>
+</body>
+</html>

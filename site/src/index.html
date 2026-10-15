@@ -1,0 +1,211 @@
+<title>OptiMOB</title>
+<meta name="description" content="Blocos paramétricos de marcenaria para SketchUp. Do modelo 3D ao plano de corte CNC.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="{{FAVICON}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>/*@css*/</style>
+<!--@body-->
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="nav-logo" href="#topo" aria-label="OptiMOB — início">{{LOGO_SEM_REGUA}}</a>
+    <nav class="nav-links mono" aria-label="Secções">
+      <a href="#configurador">Configurador</a>
+      <a href="#processo">Processo</a>
+      <a href="#funcionalidades">Funcionalidades</a>
+      <a href="#biblioteca">Biblioteca</a>
+    </nav>
+    <a class="btn btn-solid nav-cta" href="#acesso">Acesso antecipado</a>
+  </div>
+</header>
+
+<main id="topo">
+  <!-- HERO + CONFIGURADOR -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-head">
+        <p class="eyebrow mono"><i class="sq"></i>Extensão para SketchUp · v1.0</p>
+        <h1>Do modelo ao corte,<br>em <span class="blue">um parâmetro.</span></h1>
+        <p class="lead">Blocos paramétricos de marcenaria que calculam peças, orlas e chapas enquanto desenha. Mexa nas medidas abaixo e veja o OptiMOB a trabalhar.</p>
+      </div>
+
+      <div class="app" id="configurador">
+        <div class="app-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="mono app-file" id="appFile">ROUPEIRO_2M.skp</span>
+          <span class="chip chip-live mono"><i></i>Ao vivo</span>
+        </div>
+
+        <div class="app-grid">
+          <!-- Parâmetros -->
+          <form class="params" id="params" aria-label="Parâmetros do módulo">
+            <div class="params-h mono">Parâmetros</div>
+            <div class="field">
+              <label for="pL"><span>Largura</span><output id="oL" class="mono"></output></label>
+              <input type="range" id="pL" min="300" max="2700" step="10" value="1800">
+            </div>
+            <div class="field">
+              <label for="pA"><span>Altura</span><output id="oA" class="mono"></output></label>
+              <input type="range" id="pA" min="400" max="2600" step="10" value="2400">
+            </div>
+            <div class="field">
+              <label for="pP"><span>Profundidade</span><output id="oP" class="mono"></output></label>
+              <input type="range" id="pP" min="250" max="650" step="10" value="580">
+            </div>
+            <div class="field">
+              <label for="pM"><span>Módulos</span><output id="oM" class="mono"></output></label>
+              <input type="range" id="pM" min="1" max="4" step="1" value="2">
+            </div>
+            <div class="field">
+              <label for="pN"><span>Prateleiras por módulo</span><output id="oN" class="mono"></output></label>
+              <input type="range" id="pN" min="0" max="8" step="1" value="4">
+            </div>
+            <fieldset class="field seg-field">
+              <legend>Espessura da chapa</legend>
+              <div class="seg" role="radiogroup">
+                <input type="radio" name="pE" id="pE16" value="16"><label for="pE16" class="mono">16</label>
+                <input type="radio" name="pE" id="pE18" value="18" checked><label for="pE18" class="mono">18</label>
+                <input type="radio" name="pE" id="pE19" value="19"><label for="pE19" class="mono">19</label>
+                <input type="radio" name="pE" id="pE25" value="25"><label for="pE25" class="mono">25</label>
+              </div>
+            </fieldset>
+            <div class="toggles">
+              <label class="tg" for="pDoors"><input type="checkbox" id="pDoors" checked><span class="tg-box"></span>Portas</label>
+              <label class="tg" for="pPlinth"><input type="checkbox" id="pPlinth" checked><span class="tg-box"></span>Rodapé</label>
+            </div>
+          </form>
+
+          <!-- Desenho -->
+          <div class="view">
+            <div class="view-grid" aria-hidden="true"></div>
+            <div class="view-tag mono"><i></i><span id="viewTag">ROUPEIRO_2M</span></div>
+            <div class="view-svg" id="drawing" role="img" aria-label="Desenho isométrico do módulo com cotas"></div>
+            <div class="stats">
+              <div><span class="mono">Peças</span><b id="sPecas">—</b></div>
+              <div><span class="mono">Chapas</span><b id="sChapas">—</b></div>
+              <div><span class="mono">Aproveitamento</span><b id="sAprov" class="blue">—</b></div>
+              <div><span class="mono">Orla</span><b id="sOrla">—</b></div>
+            </div>
+          </div>
+
+          <!-- Plano de corte -->
+          <div class="nest">
+            <div class="panel-h">
+              <span class="mono">Plano de corte · chapa 2750 × 1830</span>
+              <div class="tabs" id="sheetTabs" role="tablist" aria-label="Chapas"></div>
+            </div>
+            <div class="nest-svg" id="nesting" role="img" aria-label="Distribuição das peças na chapa"></div>
+          </div>
+
+          <!-- Lista de corte -->
+          <div class="list">
+            <div class="panel-h"><span class="mono">Lista de corte</span><span class="mono dim" id="listMat">MDF 18 mm</span></div>
+            <div class="table-wrap">
+              <table class="cut mono" id="cutList">
+                <thead><tr><th>Cód.</th><th>Peça</th><th class="r">Qtd</th><th class="r">C × L (mm)</th><th class="r">Orla</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESSO -->
+  <section class="band" id="processo">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow mono">Processo</p>
+        <h2>Três passos entre a ideia e a máquina.</h2>
+      </div>
+      <ol class="steps">
+        <li>
+          <span class="step-n mono">01</span>
+          <h3>Modelar</h3>
+          <p>Insira um bloco OptiMOB no seu modelo SketchUp. Roupeiros, cozinhas, estantes e móveis de TV já vêm construídos como em oficina.</p>
+          <div class="step-tag mono">3D</div>
+        </li>
+        <li>
+          <span class="step-n mono">02</span>
+          <h3>Parametrizar</h3>
+          <p>Ajuste largura, altura, divisões, prateleiras e espessura. Cada peça interna recalcula a sua medida, encaixe e orla.</p>
+          <div class="step-tag mono on">PARAM</div>
+        </li>
+        <li>
+          <span class="step-n mono">03</span>
+          <h3>Cortar</h3>
+          <p>Gere a lista de corte, o plano de nesting por chapa e as etiquetas de cada peça, prontos para a seccionadora ou para a CNC.</p>
+          <div class="step-tag mono">CNC</div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- FUNCIONALIDADES -->
+  <section class="band" id="funcionalidades">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow mono">Funcionalidades</p>
+        <h2>Tudo o que a marcenaria calcula à mão, calculado por si.</h2>
+      </div>
+      <div class="feats" id="feats"></div>
+    </div>
+  </section>
+
+  <!-- BIBLIOTECA -->
+  <section class="band" id="biblioteca">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div>
+          <p class="eyebrow mono">Biblioteca de blocos</p>
+          <h2>Comece de um módulo que já funciona.</h2>
+        </div>
+        <p class="sec-note">Escolha um bloco para o abrir no configurador lá em cima.</p>
+      </div>
+      <div class="lib" id="lib"></div>
+    </div>
+  </section>
+
+  <!-- OFICINA -->
+  <section class="band" id="oficina">
+    <div class="wrap shop">
+      <div class="shop-txt">
+        <p class="eyebrow mono">Na oficina</p>
+        <h2>Cada peça sai identificada.</h2>
+        <p>O OptiMOB imprime uma etiqueta por peça: módulo, nome, medidas finais e lados com orla. Quem monta não precisa de abrir o desenho para saber onde cada peça vai.</p>
+        <ul class="shop-list mono">
+          <li><i></i>Lista de corte em CSV para a seccionadora</li>
+          <li><i></i>Plano de nesting por chapa</li>
+          <li><i></i>Etiquetas de peça com código de rastreio</li>
+          <li><i></i>Resumo de material e orla para orçamento</li>
+        </ul>
+      </div>
+      <div class="labels" id="labels" aria-label="Etiquetas de peça geradas a partir do configurador"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="acesso">
+    <div class="wrap cta-in">
+      <div class="cta-logo">{{LOGO}}</div>
+      <h2>Acesso antecipado à versão 1.0.</h2>
+      <p>O OptiMOB chega em breve à Extension Warehouse. Escreva-nos para entrar no grupo de oficinas que testa a primeira versão.</p>
+      <div class="mail">
+        <span class="mono" id="mailAddr">ola@optimob.design</span>
+        <button type="button" class="btn btn-solid" id="copyMail">Copiar email</button>
+      </div>
+      <p class="mono copied" id="copiedMsg" aria-live="polite"></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">{{SIMBOLO}}<div><b>OptiMOB</b><span class="mono">Furniture Design System · SketchUp Extension</span></div></div>
+    <span class="mono foot-c">© 2026 OptiMOB</span>
+  </div>
+</footer>
+
+<script>/*@js*/</script>
