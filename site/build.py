@@ -34,7 +34,7 @@ def main():
     head, body = out.split('<!--@body-->')
 
     DIST.mkdir(exist_ok=True)
-    (DIST / 'artifact.html').write_text(head + body)
+    (DIST / 'artifact.html').write_text(head + '<script>window.OPTIMOB_PREVIEW = true;</script>\n' + body)
     full = ('<!doctype html>\n<html lang="pt">\n<head>\n<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
             + head + '</head>\n<body>\n' + body + '</body>\n</html>\n')

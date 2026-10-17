@@ -38,20 +38,33 @@ python3 site/build.py          # gera site/dist/index.html
 O resultado é um único ficheiro HTML sem dependências (as fontes vêm do Google Fonts).
 Serve para qualquer alojamento estático: GitHub Pages, Netlify, Vercel ou o seu próprio servidor.
 
+### Lista de espera (Netlify Forms)
+
+Os dois formulários (`lista-espera` no topo e `lista-espera-final` no fim) já têm
+`data-netlify="true"`. Depois de publicar no Netlify:
+
+1. No painel do site, abra **Forms** e clique em **Enable form detection**.
+2. Volte a publicar (arraste outra vez a pasta com o `index.html`).
+3. Os registos aparecem em **Forms**, com email, perfil e origem (topo ou final).
+   Em *Forms › Form notifications* pode receber um email a cada registo.
+
 ### Secções
 
-1. **Configurador** — o visitante altera largura, altura, profundidade, módulos, prateleiras,
+1. **Hero** — título, formulário de lista de espera e módulo que ajusta a largura sozinho.
+2. **Configurador** — o visitante altera largura, altura, profundidade, módulos, prateleiras,
    espessura, portas e rodapé. O site recalcula ao vivo:
    - o desenho do móvel em vista dimétrica com cotas;
    - a lista de corte (peça, quantidade, medidas, metros de orla);
    - o plano de corte em chapas de 2750 × 1830 mm (nesting MaxRects, serra de 4 mm,
      refilo de 10 mm, rotação livre) e a sobra reutilizável da última chapa;
    - as etiquetas de peça na secção "Na oficina".
-2. **Processo** — Modelar → Parametrizar → Cortar.
-3. **Funcionalidades** — seis capacidades da extensão.
+3. **Como funciona** — Modelar → Parametrizar → Cortar.
 4. **Biblioteca** — seis blocos pré-definidos que abrem no configurador.
-5. **Na oficina** — etiquetas de peça geradas a partir do configurador.
-6. **Acesso antecipado** — contacto por email.
+5. **Para quem é** — marcenarias, designers de interiores, fábricas.
+6. **Funcionalidades** — seis capacidades da extensão.
+7. **Na oficina** — etiquetas de peça geradas a partir do configurador.
+8. **Perguntas** — FAQ.
+9. **CTA final** — segundo formulário de lista de espera.
 
 ### O que editar
 
@@ -62,7 +75,8 @@ Serve para qualquer alojamento estático: GitHub Pages, Netlify, Vercel ou o seu
 | Blocos da biblioteca | objeto `PRESETS` em `site/src/app.js` |
 | Regras de construção das peças | função `compute()` em `site/src/app.js` |
 | Chapa, serra e refilo | constante `SHEET` em `site/src/app.js` |
-| Email de contacto | `#mailAddr` em `site/src/index.html` |
+| Email de contacto | FAQ e rodapé em `site/src/index.html`; mensagem de erro em `app.js` |
+| Perguntas frequentes | secção `#faq` em `site/src/index.html` |
 
 Depois de editar, corra `python3 site/build.py` outra vez.
 

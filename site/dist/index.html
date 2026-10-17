@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OptiMOB</title>
-<meta name="description" content="Blocos paramétricos de marcenaria para SketchUp. Do modelo 3D ao plano de corte CNC.">
+<meta name="description" content="Blocos paramétricos de marcenaria para SketchUp. Do modelo 3D ao plano de corte CNC. Entre na lista de acesso antecipado.">
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta property="og:title" content="OptiMOB — Do modelo ao corte, em um parâmetro">
+<meta property="og:description" content="Blocos paramétricos de marcenaria para SketchUp: lista de corte, orlas e plano de corte calculados enquanto desenha.">
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyLjAiIGZpbGw9IiMxQjFFMUUiLz48Y2lyY2xlIGN4PSI1MC4wIiBjeT0iNDAuMCIgcj0iMjcuMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRUVGMEVBIiBzdHJva2Utd2lkdGg9IjcuOCIvPjxyZWN0IHg9IjQ1LjcxIiB5PSIzNS43MSIgd2lkdGg9IjguNTgiIGhlaWdodD0iOC41OCIgZmlsbD0iIzNBQTBGRiIvPjxyZWN0IHg9IjIwLjAiIHk9IjgxLjUiIHdpZHRoPSI0Ny4wIiBoZWlnaHQ9IjUuMCIgZmlsbD0iIzNBQTBGRiIvPjxyZWN0IHg9IjIwLjAiIHk9Ijc4LjU0IiB3aWR0aD0iNS4wIiBoZWlnaHQ9IjEwLjkyIiBmaWxsPSIjM0FBMEZGIi8+PHJlY3QgeD0iNjcuMCIgeT0iNzcuNSIgd2lkdGg9IjEzLjAiIGhlaWdodD0iMTMuMCIgZmlsbD0iIzNBQTBGRiIvPjwvc3ZnPg==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +26,7 @@
   --grid-b:rgba(58,160,255,.07);
   --label-bg:#F6F7F3;
   --label-ink:#1B1E1E;
+  --err:#FF7A66;          /* erro de formulário */
   --display:"Inter","Inter Display",ui-sans-serif,system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
   color-scheme:dark;
@@ -67,8 +70,51 @@ p{margin:0}
 @media (max-width:860px){.nav-links{display:none}.nav-cta{margin-left:auto}}
 
 /* hero */
-.hero{padding-block:72px 96px}
-.hero-head{max-width:900px;margin-bottom:56px}
+.hero{padding-block:64px 104px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:56px;align-items:center}
+.hero h1{font-size:clamp(2.4rem,4.3vw,4rem)}
+.hero-txt{min-width:0}
+@media (max-width:980px){.hero-grid{grid-template-columns:minmax(0,1fr);gap:48px}}
+
+/* visual do hero: o produto a trabalhar sozinho */
+.hero-vis{margin:0;position:relative;border:1px solid var(--steel);background:var(--carbon);aspect-ratio:1/1.02;max-width:100%;display:flex;flex-direction:column;overflow:hidden}
+.hv-grid{position:absolute;inset:0;background-image:linear-gradient(var(--grid-b) 1px,transparent 1px),linear-gradient(90deg,var(--grid-b) 1px,transparent 1px);background-size:16px 16px;-webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse at 50% 45%,#000 30%,transparent 80%)}
+.hv-tag{position:absolute;left:16px;top:16px;z-index:2;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;background:var(--graphite);border:1px solid var(--steel);padding:6px 10px;display:flex;align-items:center;gap:8px;color:var(--bone)}
+.hv-tag i{width:6px;height:6px;background:var(--blue)}
+.hv-draw{position:relative;flex:1;min-height:0;padding:56px 22px 6px}
+.hv-draw svg{width:100%;height:100%}
+.hv-read{position:relative;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--steel)}
+.hv-read div{padding:14px 16px;border-right:1px solid var(--steel);display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.hv-read div:last-child{border-right:0}
+.hv-read span{width:100%;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
+.hv-read b{font-size:1.45rem;font-weight:500;font-variant-numeric:tabular-nums}
+.hv-read div:first-child b{color:var(--blue)}
+.hv-read small{font-size:.7rem;color:var(--ash)}
+
+/* formulário da lista de espera */
+.wl{margin-top:36px;max-width:640px}
+.wl-row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:0;border:1px solid var(--steel);background:var(--carbon)}
+.wl-f{display:flex;flex-direction:column;gap:2px;padding:10px 14px 8px;border-right:1px solid var(--steel);min-width:0}
+.wl-f span{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
+.wl-f input,.wl-f select{font:500 1rem var(--display);color:var(--bone);background:transparent;border:0;padding:4px 0;outline:0;width:100%;min-width:0;border-radius:0;-webkit-appearance:none;appearance:none}
+.wl-f select{cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,var(--ash) 50%),linear-gradient(135deg,var(--ash) 50%,transparent 50%);background-position:calc(100% - 9px) 55%,calc(100% - 4px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:18px}
+.wl-f select option{background:var(--carbon);color:var(--bone)}
+.wl-f input::placeholder{color:#5d6462}
+.wl-f:focus-within{box-shadow:inset 0 -2px 0 var(--blue)}
+.wl-f:has([aria-invalid=true]){box-shadow:inset 0 -2px 0 var(--err)}
+.wl-perfil{border-right:0}
+.wl-btn{grid-column:1/-1;justify-content:center;padding:16px 18px;font-size:1rem;border:0}
+.wl-btn:disabled{opacity:.55;cursor:default}
+.wl-btn:disabled:hover{background:var(--blue)}
+.wl-msg{min-height:1.5em;margin-top:12px;font-size:.78rem;letter-spacing:.02em;color:var(--ash)}
+.wl-msg.ok{color:var(--blue)}
+.wl-msg.err{color:var(--err)}
+.wl-note{font-size:.85rem;color:var(--ash)}
+.wl.ok .wl-row{border-color:var(--blue)}
+.wl.ok .wl-note{display:none}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media (min-width:1180px){.hero .wl-row{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto}.hero .wl-btn{grid-column:auto}}
+@media (max-width:520px){.wl-row{grid-template-columns:minmax(0,1fr)}.wl-f{border-right:0;border-bottom:1px solid var(--steel)}}
 
 /* janela da app */
 .app{background:var(--carbon);border:1px solid var(--steel);box-shadow:0 40px 90px rgba(0,0,0,.45)}
@@ -193,7 +239,7 @@ input[type=range]:focus-visible{outline-offset:4px}
 .lib-meta span{font-size:.7rem;color:var(--ash);letter-spacing:.06em}
 .lib-go{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);white-space:nowrap}
 @media (max-width:900px){.lib{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:560px){.lib{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.lib{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.lib-draw{padding:10px 12px}.lib-meta{padding:12px;flex-direction:column;align-items:flex-start;gap:6px}.lib-meta b{font-size:.92rem}.lib-meta span{font-size:.62rem}}
 
 /* oficina */
 .shop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:72px;align-items:center}
@@ -225,11 +271,10 @@ input[type=range]:focus-visible{outline-offset:4px}
 .cta{border-top:1px solid var(--steel);padding-block:120px;background:radial-gradient(ellipse 60% 70% at 50% 40%,rgba(58,160,255,.09),transparent 70%)}
 .cta-in{display:flex;flex-direction:column;align-items:center;text-align:center}
 .cta-logo{width:min(380px,80%);margin-bottom:56px}
-.cta h2{max-width:18ch}
+.cta h2{max-width:20ch}
+.wl-final{width:100%;max-width:720px;margin-inline:auto;text-align:left}
+.wl-final .wl-msg{text-align:center}
 .cta-in>p{color:var(--ash);max-width:52ch;margin-top:20px;font-size:1.05rem}
-.mail{display:flex;align-items:stretch;margin-top:36px;border:1px solid var(--steel);max-width:100%;flex-wrap:wrap}
-.mail span{padding:12px 18px;font-size:.95rem;user-select:all;display:flex;align-items:center;min-width:0;overflow-wrap:anywhere}
-.copied{font-size:.72rem;letter-spacing:.16em;color:var(--blue);min-height:1.4em;margin-top:14px}
 
 /* rodapé */
 .foot{border-top:1px solid var(--steel);background:var(--carbon)}
@@ -240,6 +285,32 @@ input[type=range]:focus-visible{outline-offset:4px}
 .foot-brand span,.foot-c{font-size:.66rem;letter-spacing:.16em;color:var(--ash);text-transform:uppercase}
 
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.chip-live i{animation:none}*{transition:none!important}}
+
+/* biblioteca dentro da demo */
+.lib-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;margin:72px 0 22px}
+.lib-head .eyebrow{margin:0}
+
+/* para quem */
+.aud{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.aud article{border:1px solid var(--steel);background:var(--graphite);padding:30px 28px 32px;display:flex;flex-direction:column;gap:14px;border-top:3px solid var(--blue)}
+.aud-k{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--blue)}
+.aud h3{font-size:1.3rem}
+.aud p{color:var(--ash)}
+@media (max-width:900px){.aud{grid-template-columns:minmax(0,1fr)}}
+
+/* perguntas */
+.faq-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:64px;align-items:start}
+.faq-wrap .sec-head{margin:0}
+.faq{border-top:1px solid var(--steel)}
+.faq details{border-bottom:1px solid var(--steel)}
+.faq summary{list-style:none;cursor:pointer;padding:22px 40px 22px 0;font-size:1.1rem;font-weight:500;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";position:absolute;right:6px;top:50%;width:10px;height:10px;margin-top:-5px;border:1px solid var(--ash);transition:background .15s,border-color .15s}
+.faq details[open] summary::after{background:var(--blue);border-color:var(--blue)}
+.faq summary:hover{color:var(--blue)}
+.faq details p{color:var(--ash);padding:0 40px 24px 0;max-width:62ch}
+.sel{user-select:all;color:var(--bone)}
+@media (max-width:900px){.faq-wrap{grid-template-columns:minmax(0,1fr);gap:36px}}
 </style>
 </head>
 <body>
@@ -255,23 +326,100 @@ input[type=range]:focus-visible{outline-offset:4px}
 <path fill="#3AA0FF" d="M7069.0 1560.0H7700.0C8039.0 1560.0 8222.0 1389.0 8222.0 1140.0C8222.0 928.0 8082.0 800.0 7900.0 783.0V781.0C8064.0 740.0 8167.0 625.0 8167.0 453.0C8167.0 224.0 7987.0 70.0 7666.0 70.0H7069.0ZM7370.0 1318.0V921.0H7662.0C7817.0 921.0 7908.0 999.0 7908.0 1123.0C7908.0 1247.0 7815.0 1318.0 7657.0 1318.0ZM7370.0 689.0V312.0H7643.0C7778.0 312.0 7861.0 385.0 7861.0 501.0C7861.0 616.0 7778.0 689.0 7643.0 689.0Z"/>
 <rect fill="#3AA0FF" x="3348.8" y="79.6" width="190.4" height="190.4"/></svg></a>
     <nav class="nav-links mono" aria-label="Secções">
-      <a href="#configurador">Configurador</a>
-      <a href="#processo">Processo</a>
+      <a href="#demo">Demo</a>
+      <a href="#para-quem">Para quem</a>
       <a href="#funcionalidades">Funcionalidades</a>
-      <a href="#biblioteca">Biblioteca</a>
+      <a href="#faq">Perguntas</a>
     </nav>
-    <a class="btn btn-solid nav-cta" href="#acesso">Acesso antecipado</a>
+    <a class="btn btn-solid nav-cta" href="#acesso">Entrar na lista</a>
   </div>
 </header>
 
 <main id="topo">
-  <!-- HERO + CONFIGURADOR -->
+  <!-- HERO -->
   <section class="hero">
-    <div class="wrap">
-      <div class="hero-head">
-        <p class="eyebrow mono"><i class="sq"></i>Extensão para SketchUp · v1.0</p>
+    <div class="wrap hero-grid">
+      <div class="hero-txt">
+        <p class="eyebrow mono"><i class="sq"></i>Extensão para SketchUp · Acesso antecipado</p>
         <h1>Do modelo ao corte,<br>em <span class="blue">um parâmetro.</span></h1>
-        <p class="lead">Blocos paramétricos de marcenaria que calculam peças, orlas e chapas enquanto desenha. Mexa nas medidas abaixo e veja o OptiMOB a trabalhar.</p>
+        <p class="lead">Blocos paramétricos de marcenaria que calculam peças, orlas e chapas enquanto desenha. Mude uma medida e a lista de corte acompanha.</p>
+
+        <form class="wl" name="lista-espera" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-origem="topo" novalidate>
+          <input type="hidden" name="form-name" value="lista-espera">
+          <input type="hidden" name="origem" value="topo">
+          <p class="hp" aria-hidden="true"><label>Não preencher <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+          <div class="wl-row">
+            <label class="wl-f wl-email" for="wlEmail1"><span class="mono">Email</span>
+              <input type="email" id="wlEmail1" name="email" required autocomplete="email" placeholder="nome@oficina.com">
+            </label>
+            <label class="wl-f wl-perfil" for="wlPerfil1"><span class="mono">Sou</span>
+              <select id="wlPerfil1" name="perfil" required>
+                <option value="" disabled selected>Escolher</option>
+                <option>Marcenaria</option>
+                <option>Designer de interiores</option>
+                <option>Fábrica de mobiliário</option>
+                <option>Outro</option>
+              </select>
+            </label>
+            <button type="submit" class="btn btn-solid wl-btn">Quero acesso antecipado <span aria-hidden="true">→</span></button>
+          </div>
+          <p class="wl-msg mono" role="status" aria-live="polite"></p>
+          <p class="wl-note">Gratuito para entrar. Avisamos quando a versão de teste estiver pronta.</p>
+        </form>
+      </div>
+
+      <figure class="hero-vis" aria-label="Módulo a ajustar a largura automaticamente">
+        <div class="hv-grid" aria-hidden="true"></div>
+        <figcaption class="hv-tag mono"><i></i>Parâmetro · Largura</figcaption>
+        <div class="hv-draw" id="heroDraw"></div>
+        <div class="hv-read mono">
+          <div><span>L</span><b id="hvL">1800</b><small>mm</small></div>
+          <div><span>Peças</span><b id="hvP">19</b></div>
+          <div><span>Orla</span><b id="hvO">41,5</b><small>m</small></div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- PROCESSO -->
+  <section class="band" id="processo">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow mono">Como funciona</p>
+        <h2>Três passos entre a ideia e a máquina.</h2>
+      </div>
+      <ol class="steps">
+        <li>
+          <span class="step-n mono">01</span>
+          <h3>Modelar</h3>
+          <p>Insira um bloco OptiMOB no seu modelo SketchUp. Roupeiros, cozinhas, estantes e móveis de TV já vêm construídos como em oficina.</p>
+          <div class="step-tag mono">3D</div>
+        </li>
+        <li>
+          <span class="step-n mono">02</span>
+          <h3>Parametrizar</h3>
+          <p>Ajuste largura, altura, divisões, prateleiras e espessura. Cada peça interna recalcula a sua medida, encaixe e orla.</p>
+          <div class="step-tag mono on">PARAM</div>
+        </li>
+        <li>
+          <span class="step-n mono">03</span>
+          <h3>Cortar</h3>
+          <p>Gere a lista de corte, o plano de corte por chapa e as etiquetas de cada peça, prontos para a seccionadora ou para a CNC.</p>
+          <div class="step-tag mono">CNC</div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- DEMO -->
+  <section class="band" id="demo">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div>
+          <p class="eyebrow mono">Experimente</p>
+          <h2>Mexa nas medidas. Veja o corte a mudar.</h2>
+        </div>
+        <p class="sec-note">Uma versão simplificada do configurador, a correr aqui no navegador.</p>
       </div>
 
       <div class="app" id="configurador">
@@ -282,7 +430,6 @@ input[type=range]:focus-visible{outline-offset:4px}
         </div>
 
         <div class="app-grid">
-          <!-- Parâmetros -->
           <form class="params" id="params" aria-label="Parâmetros do módulo">
             <div class="params-h mono">Parâmetros</div>
             <div class="field">
@@ -320,11 +467,10 @@ input[type=range]:focus-visible{outline-offset:4px}
             </div>
           </form>
 
-          <!-- Desenho -->
           <div class="view">
             <div class="view-grid" aria-hidden="true"></div>
             <div class="view-tag mono"><i></i><span id="viewTag">ROUPEIRO_2M</span></div>
-            <div class="view-svg" id="drawing" role="img" aria-label="Desenho isométrico do módulo com cotas"></div>
+            <div class="view-svg" id="drawing" role="img" aria-label="Desenho do módulo com cotas"></div>
             <div class="stats">
               <div><span class="mono">Peças</span><b id="sPecas">—</b></div>
               <div><span class="mono">Chapas</span><b id="sChapas">—</b></div>
@@ -333,7 +479,6 @@ input[type=range]:focus-visible{outline-offset:4px}
             </div>
           </div>
 
-          <!-- Plano de corte -->
           <div class="nest">
             <div class="panel-h">
               <span class="mono">Plano de corte · chapa 2750 × 1830</span>
@@ -342,7 +487,6 @@ input[type=range]:focus-visible{outline-offset:4px}
             <div class="nest-svg" id="nesting" role="img" aria-label="Distribuição das peças na chapa"></div>
           </div>
 
-          <!-- Lista de corte -->
           <div class="list">
             <div class="panel-h"><span class="mono">Lista de corte</span><span class="mono dim" id="listMat">MDF 18 mm</span></div>
             <div class="table-wrap">
@@ -354,36 +498,39 @@ input[type=range]:focus-visible{outline-offset:4px}
           </div>
         </div>
       </div>
+
+      <div class="lib-head">
+        <p class="eyebrow mono">Biblioteca de blocos</p>
+        <p class="sec-note">Abra um destes módulos no configurador.</p>
+      </div>
+      <div class="lib" id="lib"></div>
     </div>
   </section>
 
-  <!-- PROCESSO -->
-  <section class="band" id="processo">
+  <!-- PARA QUEM -->
+  <section class="band" id="para-quem">
     <div class="wrap">
       <div class="sec-head">
-        <p class="eyebrow mono">Processo</p>
-        <h2>Três passos entre a ideia e a máquina.</h2>
+        <p class="eyebrow mono">Para quem é</p>
+        <h2>Feito para quem desenha e para quem corta.</h2>
       </div>
-      <ol class="steps">
-        <li>
-          <span class="step-n mono">01</span>
-          <h3>Modelar</h3>
-          <p>Insira um bloco OptiMOB no seu modelo SketchUp. Roupeiros, cozinhas, estantes e móveis de TV já vêm construídos como em oficina.</p>
-          <div class="step-tag mono">3D</div>
-        </li>
-        <li>
-          <span class="step-n mono">02</span>
-          <h3>Parametrizar</h3>
-          <p>Ajuste largura, altura, divisões, prateleiras e espessura. Cada peça interna recalcula a sua medida, encaixe e orla.</p>
-          <div class="step-tag mono on">PARAM</div>
-        </li>
-        <li>
-          <span class="step-n mono">03</span>
-          <h3>Cortar</h3>
-          <p>Gere a lista de corte, o plano de nesting por chapa e as etiquetas de cada peça, prontos para a seccionadora ou para a CNC.</p>
-          <div class="step-tag mono">CNC</div>
-        </li>
-      </ol>
+      <div class="aud">
+        <article>
+          <span class="mono aud-k">Marcenarias</span>
+          <h3>Menos tempo a fazer listas à mão.</h3>
+          <p>A lista de corte e as orlas saem do próprio desenho. Uma alteração do cliente deixa de significar refazer contas.</p>
+        </article>
+        <article>
+          <span class="mono aud-k">Designers de interiores</span>
+          <h3>Projetos que a oficina consegue fabricar.</h3>
+          <p>Desenhe com módulos que já respeitam espessuras e encaixes reais, e entregue medidas em que o marceneiro confia.</p>
+        </article>
+        <article>
+          <span class="mono aud-k">Fábricas de mobiliário</span>
+          <h3>Do orçamento à CNC sem redigitar.</h3>
+          <p>Peças, chapas e orla contadas para o orçamento, e etiquetas por peça para acompanhar cada componente até à montagem.</p>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -398,20 +545,6 @@ input[type=range]:focus-visible{outline-offset:4px}
     </div>
   </section>
 
-  <!-- BIBLIOTECA -->
-  <section class="band" id="biblioteca">
-    <div class="wrap">
-      <div class="sec-head split">
-        <div>
-          <p class="eyebrow mono">Biblioteca de blocos</p>
-          <h2>Comece de um módulo que já funciona.</h2>
-        </div>
-        <p class="sec-note">Escolha um bloco para o abrir no configurador lá em cima.</p>
-      </div>
-      <div class="lib" id="lib"></div>
-    </div>
-  </section>
-
   <!-- OFICINA -->
   <section class="band" id="oficina">
     <div class="wrap shop">
@@ -420,8 +553,8 @@ input[type=range]:focus-visible{outline-offset:4px}
         <h2>Cada peça sai identificada.</h2>
         <p>O OptiMOB imprime uma etiqueta por peça: módulo, nome, medidas finais e lados com orla. Quem monta não precisa de abrir o desenho para saber onde cada peça vai.</p>
         <ul class="shop-list mono">
-          <li><i></i>Lista de corte em CSV para a seccionadora</li>
-          <li><i></i>Plano de nesting por chapa</li>
+          <li><i></i>Lista de corte para a seccionadora</li>
+          <li><i></i>Plano de corte por chapa</li>
           <li><i></i>Etiquetas de peça com código de rastreio</li>
           <li><i></i>Resumo de material e orla para orçamento</li>
         </ul>
@@ -430,7 +563,39 @@ input[type=range]:focus-visible{outline-offset:4px}
     </div>
   </section>
 
-  <!-- CTA -->
+  <!-- FAQ -->
+  <section class="band" id="faq">
+    <div class="wrap faq-wrap">
+      <div class="sec-head">
+        <p class="eyebrow mono">Perguntas</p>
+        <h2>Antes de entrar na lista.</h2>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>O que é o OptiMOB?</summary>
+          <p>Uma extensão para SketchUp com blocos de mobiliário paramétricos. Cada bloco é um móvel construído peça a peça, que se ajusta quando muda as medidas e gera a lista de corte, as orlas e o plano de corte.</p>
+        </details>
+        <details>
+          <summary>Preciso de saber programar ou de usar componentes dinâmicos?</summary>
+          <p>Não. Trabalha com valores: largura, altura, profundidade, número de módulos e prateleiras. O OptiMOB trata das contas.</p>
+        </details>
+        <details>
+          <summary>Como funciona o acesso antecipado?</summary>
+          <p>Deixa o seu email e o tipo de trabalho que faz. Quando a versão de teste estiver pronta, escrevemos-lhe com as instruções de instalação. Usamos o seu email apenas para isso.</p>
+        </details>
+        <details>
+          <summary>Quanto vai custar?</summary>
+          <p>Os preços serão anunciados no lançamento. Quem está na lista de espera é o primeiro a saber.</p>
+        </details>
+        <details>
+          <summary>Tenho uma dúvida que não está aqui.</summary>
+          <p>Escreva para <span class="mono sel">ola@optimob.design</span> e respondemos.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
   <section class="cta" id="acesso">
     <div class="wrap cta-in">
       <div class="cta-logo"><svg role="img" aria-label="OptiMOB" xmlns="http://www.w3.org/2000/svg" viewBox="90 -0 8132 2268"><path fill="#EEF0EA" d="M767.0 1584.0C1162.0 1584.0 1444.0 1263.0 1444.0 816.0C1444.0 367.0 1162.0 46.0 767.0 46.0C372.0 46.0 90.0 367.0 90.0 816.0C90.0 1263.0 372.0 1584.0 767.0 1584.0ZM767.0 1416.0C496.0 1416.0 270.0 1202.0 270.0 816.0C270.0 428.0 496.0 214.0 767.0 214.0C1037.0 214.0 1264.0 428.0 1264.0 816.0C1264.0 1202.0 1037.0 1416.0 767.0 1416.0Z"/>
@@ -444,13 +609,30 @@ input[type=range]:focus-visible{outline-offset:4px}
 <rect fill="#3AA0FF" x="3790.0" y="2109.8" width="4208.5" height="92.4"/>
 <rect fill="#3AA0FF" x="3790.0" y="2062.1" width="92.4" height="187.7"/>
 <rect fill="#3AA0FF" x="7998.5" y="2044.2" width="223.5" height="223.5"/></svg></div>
-      <h2>Acesso antecipado à versão 1.0.</h2>
-      <p>O OptiMOB chega em breve à Extension Warehouse. Escreva-nos para entrar no grupo de oficinas que testa a primeira versão.</p>
-      <div class="mail">
-        <span class="mono" id="mailAddr">ola@optimob.design</span>
-        <button type="button" class="btn btn-solid" id="copyMail">Copiar email</button>
-      </div>
-      <p class="mono copied" id="copiedMsg" aria-live="polite"></p>
+      <h2>Seja das primeiras oficinas a usar o OptiMOB.</h2>
+      <p>Entre na lista de acesso antecipado e receba a versão de teste assim que estiver pronta.</p>
+
+      <form class="wl wl-final" name="lista-espera-final" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+        <input type="hidden" name="form-name" value="lista-espera-final">
+        <input type="hidden" name="origem" value="final">
+        <p class="hp" aria-hidden="true"><label>Não preencher <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <div class="wl-row">
+          <label class="wl-f wl-email" for="wlEmail2"><span class="mono">Email</span>
+            <input type="email" id="wlEmail2" name="email" required autocomplete="email" placeholder="nome@oficina.com">
+          </label>
+          <label class="wl-f wl-perfil" for="wlPerfil2"><span class="mono">Sou</span>
+            <select id="wlPerfil2" name="perfil" required>
+              <option value="" disabled selected>Escolher</option>
+              <option>Marcenaria</option>
+              <option>Designer de interiores</option>
+              <option>Fábrica de mobiliário</option>
+              <option>Outro</option>
+            </select>
+          </label>
+          <button type="submit" class="btn btn-solid wl-btn">Quero acesso antecipado <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="wl-msg mono" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </section>
 </main>
@@ -458,7 +640,7 @@ input[type=range]:focus-visible{outline-offset:4px}
 <footer class="foot">
   <div class="wrap foot-in">
     <div class="foot-brand"><svg role="img" aria-label="OptiMOB" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50.0" cy="40.0" r="27.0" fill="none" stroke="#EEF0EA" stroke-width="7.8"/><rect x="45.71" y="35.71" width="8.58" height="8.58" fill="#3AA0FF"/><rect x="20.0" y="81.5" width="47.0" height="5.0" fill="#3AA0FF"/><rect x="20.0" y="78.54" width="5.0" height="10.92" fill="#3AA0FF"/><rect x="67.0" y="77.5" width="13.0" height="13.0" fill="#3AA0FF"/></svg><div><b>OptiMOB</b><span class="mono">Furniture Design System · SketchUp Extension</span></div></div>
-    <span class="mono foot-c">© 2026 OptiMOB</span>
+    <span class="mono foot-c">© 2026 OptiMOB · ola@optimob.design</span>
   </div>
 </footer>
 
@@ -836,18 +1018,63 @@ input[type=range]:focus-visible{outline-offset:4px}
     $('labels').innerHTML = out;
   }
 
-  // ---------- email ----------
-  $('copyMail').addEventListener('click', function () {
-    var addr = $('mailAddr').textContent, msg = $('copiedMsg');
-    function fallback() {
-      var range = document.createRange(); range.selectNodeContents($('mailAddr'));
-      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
-      msg.textContent = 'Email selecionado — use Ctrl+C para copiar';
-    }
-    try {
-      navigator.clipboard.writeText(addr).then(function () { msg.textContent = 'Email copiado'; }, fallback);
-    } catch (e) { fallback(); }
+  // ---------- lista de espera (Netlify Forms) ----------
+  // No site publicado no Netlify o envio vai para o painel Forms do Netlify.
+  // Na pré-visualização (build.py marca window.OPTIMOB_PREVIEW) não há servidor para receber.
+  var PREVIEW = !!window.OPTIMOB_PREVIEW || location.protocol === 'file:';
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  document.querySelectorAll('form.wl').forEach(function (form) {
+    var msg = form.querySelector('.wl-msg'), btn = form.querySelector('.wl-btn');
+    function say(text, kind) { msg.textContent = text; msg.className = 'wl-msg mono' + (kind ? ' ' + kind : ''); }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.elements.email, perfil = form.elements.perfil;
+      email.removeAttribute('aria-invalid'); perfil.removeAttribute('aria-invalid');
+      if (!EMAIL_RE.test(email.value.trim())) { email.setAttribute('aria-invalid', 'true'); email.focus(); say('Escreva um email válido, por exemplo nome@oficina.com.', 'err'); return; }
+      if (!perfil.value) { perfil.setAttribute('aria-invalid', 'true'); perfil.focus(); say('Escolha o tipo de trabalho que faz.', 'err'); return; }
+      var addr = email.value.trim();
+      function done() {
+        form.classList.add('ok');
+        say(PREVIEW ? 'Pré-visualização: no site publicado, ' + addr + ' entra na lista de espera.' : 'Está na lista. Vamos escrever para ' + addr + ' quando a versão de teste estiver pronta.', 'ok');
+        btn.disabled = true;
+      }
+      if (PREVIEW) { done(); return; }
+      btn.disabled = true; say('A registar…');
+      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(new FormData(form)).toString() })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
+        .catch(function () { btn.disabled = false; say('Não foi possível registar agora. Tente outra vez ou escreva para ola@optimob.design.', 'err'); });
+    });
   });
+
+  // ---------- hero: módulo a ajustar a largura sozinho ----------
+  var heroEl = $('heroDraw');
+  if (heroEl) {
+    var hs = { L: 1800, A: 2100, P: 560, M: 2, N: 3, E: 18, doors: true, plinth: true, file: 'HERO' };
+    var hL = $('hvL'), hP = $('hvP'), hO = $('hvO');
+    var drawHero = function (L) {
+      hs.L = Math.round(L / 10) * 10;
+      hs.M = hs.L >= 1500 ? 2 : 1;
+      var r = compute(hs);
+      heroEl.innerHTML = drawCabinet(hs, r, { pad: 0.05 });
+      hL.textContent = hs.L; hP.textContent = r.pecas; hO.textContent = r.orla.toFixed(1).replace('.', ',');
+    };
+    var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    drawHero(1800);
+    if (!still) {
+      var visible = true, t0 = performance.now(), last = 0;
+      if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }).observe(heroEl);
+      var tick = function (t) {
+        if (visible && t - last > 70) {
+          last = t;
+          var ph = ((t - t0) / 9000) % 1;                  // ciclo de 9 s
+          var e = 0.5 - 0.5 * Math.cos(ph * 2 * Math.PI);  // vai e volta suave
+          drawHero(1200 + e * 1200);
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+  }
 
   syncInputs(); render();
 })();

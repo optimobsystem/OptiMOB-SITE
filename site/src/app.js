@@ -372,18 +372,63 @@
     $('labels').innerHTML = out;
   }
 
-  // ---------- email ----------
-  $('copyMail').addEventListener('click', function () {
-    var addr = $('mailAddr').textContent, msg = $('copiedMsg');
-    function fallback() {
-      var range = document.createRange(); range.selectNodeContents($('mailAddr'));
-      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
-      msg.textContent = 'Email selecionado — use Ctrl+C para copiar';
-    }
-    try {
-      navigator.clipboard.writeText(addr).then(function () { msg.textContent = 'Email copiado'; }, fallback);
-    } catch (e) { fallback(); }
+  // ---------- lista de espera (Netlify Forms) ----------
+  // No site publicado no Netlify o envio vai para o painel Forms do Netlify.
+  // Na pré-visualização (build.py marca window.OPTIMOB_PREVIEW) não há servidor para receber.
+  var PREVIEW = !!window.OPTIMOB_PREVIEW || location.protocol === 'file:';
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  document.querySelectorAll('form.wl').forEach(function (form) {
+    var msg = form.querySelector('.wl-msg'), btn = form.querySelector('.wl-btn');
+    function say(text, kind) { msg.textContent = text; msg.className = 'wl-msg mono' + (kind ? ' ' + kind : ''); }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.elements.email, perfil = form.elements.perfil;
+      email.removeAttribute('aria-invalid'); perfil.removeAttribute('aria-invalid');
+      if (!EMAIL_RE.test(email.value.trim())) { email.setAttribute('aria-invalid', 'true'); email.focus(); say('Escreva um email válido, por exemplo nome@oficina.com.', 'err'); return; }
+      if (!perfil.value) { perfil.setAttribute('aria-invalid', 'true'); perfil.focus(); say('Escolha o tipo de trabalho que faz.', 'err'); return; }
+      var addr = email.value.trim();
+      function done() {
+        form.classList.add('ok');
+        say(PREVIEW ? 'Pré-visualização: no site publicado, ' + addr + ' entra na lista de espera.' : 'Está na lista. Vamos escrever para ' + addr + ' quando a versão de teste estiver pronta.', 'ok');
+        btn.disabled = true;
+      }
+      if (PREVIEW) { done(); return; }
+      btn.disabled = true; say('A registar…');
+      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(new FormData(form)).toString() })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
+        .catch(function () { btn.disabled = false; say('Não foi possível registar agora. Tente outra vez ou escreva para ola@optimob.design.', 'err'); });
+    });
   });
+
+  // ---------- hero: módulo a ajustar a largura sozinho ----------
+  var heroEl = $('heroDraw');
+  if (heroEl) {
+    var hs = { L: 1800, A: 2100, P: 560, M: 2, N: 3, E: 18, doors: true, plinth: true, file: 'HERO' };
+    var hL = $('hvL'), hP = $('hvP'), hO = $('hvO');
+    var drawHero = function (L) {
+      hs.L = Math.round(L / 10) * 10;
+      hs.M = hs.L >= 1500 ? 2 : 1;
+      var r = compute(hs);
+      heroEl.innerHTML = drawCabinet(hs, r, { pad: 0.05 });
+      hL.textContent = hs.L; hP.textContent = r.pecas; hO.textContent = r.orla.toFixed(1).replace('.', ',');
+    };
+    var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    drawHero(1800);
+    if (!still) {
+      var visible = true, t0 = performance.now(), last = 0;
+      if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }).observe(heroEl);
+      var tick = function (t) {
+        if (visible && t - last > 70) {
+          last = t;
+          var ph = ((t - t0) / 9000) % 1;                  // ciclo de 9 s
+          var e = 0.5 - 0.5 * Math.cos(ph * 2 * Math.PI);  // vai e volta suave
+          drawHero(1200 + e * 1200);
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+  }
 
   syncInputs(); render();
 })();

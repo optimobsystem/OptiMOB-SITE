@@ -1,6 +1,8 @@
 <title>OptiMOB</title>
-<meta name="description" content="Blocos paramétricos de marcenaria para SketchUp. Do modelo 3D ao plano de corte CNC.">
+<meta name="description" content="Blocos paramétricos de marcenaria para SketchUp. Do modelo 3D ao plano de corte CNC. Entre na lista de acesso antecipado.">
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta property="og:title" content="OptiMOB — Do modelo ao corte, em um parâmetro">
+<meta property="og:description" content="Blocos paramétricos de marcenaria para SketchUp: lista de corte, orlas e plano de corte calculados enquanto desenha.">
 <link rel="icon" href="{{FAVICON}}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,23 +13,100 @@
   <div class="wrap nav-in">
     <a class="nav-logo" href="#topo" aria-label="OptiMOB — início">{{LOGO_SEM_REGUA}}</a>
     <nav class="nav-links mono" aria-label="Secções">
-      <a href="#configurador">Configurador</a>
-      <a href="#processo">Processo</a>
+      <a href="#demo">Demo</a>
+      <a href="#para-quem">Para quem</a>
       <a href="#funcionalidades">Funcionalidades</a>
-      <a href="#biblioteca">Biblioteca</a>
+      <a href="#faq">Perguntas</a>
     </nav>
-    <a class="btn btn-solid nav-cta" href="#acesso">Acesso antecipado</a>
+    <a class="btn btn-solid nav-cta" href="#acesso">Entrar na lista</a>
   </div>
 </header>
 
 <main id="topo">
-  <!-- HERO + CONFIGURADOR -->
+  <!-- HERO -->
   <section class="hero">
-    <div class="wrap">
-      <div class="hero-head">
-        <p class="eyebrow mono"><i class="sq"></i>Extensão para SketchUp · v1.0</p>
+    <div class="wrap hero-grid">
+      <div class="hero-txt">
+        <p class="eyebrow mono"><i class="sq"></i>Extensão para SketchUp · Acesso antecipado</p>
         <h1>Do modelo ao corte,<br>em <span class="blue">um parâmetro.</span></h1>
-        <p class="lead">Blocos paramétricos de marcenaria que calculam peças, orlas e chapas enquanto desenha. Mexa nas medidas abaixo e veja o OptiMOB a trabalhar.</p>
+        <p class="lead">Blocos paramétricos de marcenaria que calculam peças, orlas e chapas enquanto desenha. Mude uma medida e a lista de corte acompanha.</p>
+
+        <form class="wl" name="lista-espera" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-origem="topo" novalidate>
+          <input type="hidden" name="form-name" value="lista-espera">
+          <input type="hidden" name="origem" value="topo">
+          <p class="hp" aria-hidden="true"><label>Não preencher <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+          <div class="wl-row">
+            <label class="wl-f wl-email" for="wlEmail1"><span class="mono">Email</span>
+              <input type="email" id="wlEmail1" name="email" required autocomplete="email" placeholder="nome@oficina.com">
+            </label>
+            <label class="wl-f wl-perfil" for="wlPerfil1"><span class="mono">Sou</span>
+              <select id="wlPerfil1" name="perfil" required>
+                <option value="" disabled selected>Escolher</option>
+                <option>Marcenaria</option>
+                <option>Designer de interiores</option>
+                <option>Fábrica de mobiliário</option>
+                <option>Outro</option>
+              </select>
+            </label>
+            <button type="submit" class="btn btn-solid wl-btn">Quero acesso antecipado <span aria-hidden="true">→</span></button>
+          </div>
+          <p class="wl-msg mono" role="status" aria-live="polite"></p>
+          <p class="wl-note">Gratuito para entrar. Avisamos quando a versão de teste estiver pronta.</p>
+        </form>
+      </div>
+
+      <figure class="hero-vis" aria-label="Módulo a ajustar a largura automaticamente">
+        <div class="hv-grid" aria-hidden="true"></div>
+        <figcaption class="hv-tag mono"><i></i>Parâmetro · Largura</figcaption>
+        <div class="hv-draw" id="heroDraw"></div>
+        <div class="hv-read mono">
+          <div><span>L</span><b id="hvL">1800</b><small>mm</small></div>
+          <div><span>Peças</span><b id="hvP">19</b></div>
+          <div><span>Orla</span><b id="hvO">41,5</b><small>m</small></div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- PROCESSO -->
+  <section class="band" id="processo">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow mono">Como funciona</p>
+        <h2>Três passos entre a ideia e a máquina.</h2>
+      </div>
+      <ol class="steps">
+        <li>
+          <span class="step-n mono">01</span>
+          <h3>Modelar</h3>
+          <p>Insira um bloco OptiMOB no seu modelo SketchUp. Roupeiros, cozinhas, estantes e móveis de TV já vêm construídos como em oficina.</p>
+          <div class="step-tag mono">3D</div>
+        </li>
+        <li>
+          <span class="step-n mono">02</span>
+          <h3>Parametrizar</h3>
+          <p>Ajuste largura, altura, divisões, prateleiras e espessura. Cada peça interna recalcula a sua medida, encaixe e orla.</p>
+          <div class="step-tag mono on">PARAM</div>
+        </li>
+        <li>
+          <span class="step-n mono">03</span>
+          <h3>Cortar</h3>
+          <p>Gere a lista de corte, o plano de corte por chapa e as etiquetas de cada peça, prontos para a seccionadora ou para a CNC.</p>
+          <div class="step-tag mono">CNC</div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- DEMO -->
+  <section class="band" id="demo">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div>
+          <p class="eyebrow mono">Experimente</p>
+          <h2>Mexa nas medidas. Veja o corte a mudar.</h2>
+        </div>
+        <p class="sec-note">Uma versão simplificada do configurador, a correr aqui no navegador.</p>
       </div>
 
       <div class="app" id="configurador">
@@ -38,7 +117,6 @@
         </div>
 
         <div class="app-grid">
-          <!-- Parâmetros -->
           <form class="params" id="params" aria-label="Parâmetros do módulo">
             <div class="params-h mono">Parâmetros</div>
             <div class="field">
@@ -76,11 +154,10 @@
             </div>
           </form>
 
-          <!-- Desenho -->
           <div class="view">
             <div class="view-grid" aria-hidden="true"></div>
             <div class="view-tag mono"><i></i><span id="viewTag">ROUPEIRO_2M</span></div>
-            <div class="view-svg" id="drawing" role="img" aria-label="Desenho isométrico do módulo com cotas"></div>
+            <div class="view-svg" id="drawing" role="img" aria-label="Desenho do módulo com cotas"></div>
             <div class="stats">
               <div><span class="mono">Peças</span><b id="sPecas">—</b></div>
               <div><span class="mono">Chapas</span><b id="sChapas">—</b></div>
@@ -89,7 +166,6 @@
             </div>
           </div>
 
-          <!-- Plano de corte -->
           <div class="nest">
             <div class="panel-h">
               <span class="mono">Plano de corte · chapa 2750 × 1830</span>
@@ -98,7 +174,6 @@
             <div class="nest-svg" id="nesting" role="img" aria-label="Distribuição das peças na chapa"></div>
           </div>
 
-          <!-- Lista de corte -->
           <div class="list">
             <div class="panel-h"><span class="mono">Lista de corte</span><span class="mono dim" id="listMat">MDF 18 mm</span></div>
             <div class="table-wrap">
@@ -110,36 +185,39 @@
           </div>
         </div>
       </div>
+
+      <div class="lib-head">
+        <p class="eyebrow mono">Biblioteca de blocos</p>
+        <p class="sec-note">Abra um destes módulos no configurador.</p>
+      </div>
+      <div class="lib" id="lib"></div>
     </div>
   </section>
 
-  <!-- PROCESSO -->
-  <section class="band" id="processo">
+  <!-- PARA QUEM -->
+  <section class="band" id="para-quem">
     <div class="wrap">
       <div class="sec-head">
-        <p class="eyebrow mono">Processo</p>
-        <h2>Três passos entre a ideia e a máquina.</h2>
+        <p class="eyebrow mono">Para quem é</p>
+        <h2>Feito para quem desenha e para quem corta.</h2>
       </div>
-      <ol class="steps">
-        <li>
-          <span class="step-n mono">01</span>
-          <h3>Modelar</h3>
-          <p>Insira um bloco OptiMOB no seu modelo SketchUp. Roupeiros, cozinhas, estantes e móveis de TV já vêm construídos como em oficina.</p>
-          <div class="step-tag mono">3D</div>
-        </li>
-        <li>
-          <span class="step-n mono">02</span>
-          <h3>Parametrizar</h3>
-          <p>Ajuste largura, altura, divisões, prateleiras e espessura. Cada peça interna recalcula a sua medida, encaixe e orla.</p>
-          <div class="step-tag mono on">PARAM</div>
-        </li>
-        <li>
-          <span class="step-n mono">03</span>
-          <h3>Cortar</h3>
-          <p>Gere a lista de corte, o plano de nesting por chapa e as etiquetas de cada peça, prontos para a seccionadora ou para a CNC.</p>
-          <div class="step-tag mono">CNC</div>
-        </li>
-      </ol>
+      <div class="aud">
+        <article>
+          <span class="mono aud-k">Marcenarias</span>
+          <h3>Menos tempo a fazer listas à mão.</h3>
+          <p>A lista de corte e as orlas saem do próprio desenho. Uma alteração do cliente deixa de significar refazer contas.</p>
+        </article>
+        <article>
+          <span class="mono aud-k">Designers de interiores</span>
+          <h3>Projetos que a oficina consegue fabricar.</h3>
+          <p>Desenhe com módulos que já respeitam espessuras e encaixes reais, e entregue medidas em que o marceneiro confia.</p>
+        </article>
+        <article>
+          <span class="mono aud-k">Fábricas de mobiliário</span>
+          <h3>Do orçamento à CNC sem redigitar.</h3>
+          <p>Peças, chapas e orla contadas para o orçamento, e etiquetas por peça para acompanhar cada componente até à montagem.</p>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -154,20 +232,6 @@
     </div>
   </section>
 
-  <!-- BIBLIOTECA -->
-  <section class="band" id="biblioteca">
-    <div class="wrap">
-      <div class="sec-head split">
-        <div>
-          <p class="eyebrow mono">Biblioteca de blocos</p>
-          <h2>Comece de um módulo que já funciona.</h2>
-        </div>
-        <p class="sec-note">Escolha um bloco para o abrir no configurador lá em cima.</p>
-      </div>
-      <div class="lib" id="lib"></div>
-    </div>
-  </section>
-
   <!-- OFICINA -->
   <section class="band" id="oficina">
     <div class="wrap shop">
@@ -176,8 +240,8 @@
         <h2>Cada peça sai identificada.</h2>
         <p>O OptiMOB imprime uma etiqueta por peça: módulo, nome, medidas finais e lados com orla. Quem monta não precisa de abrir o desenho para saber onde cada peça vai.</p>
         <ul class="shop-list mono">
-          <li><i></i>Lista de corte em CSV para a seccionadora</li>
-          <li><i></i>Plano de nesting por chapa</li>
+          <li><i></i>Lista de corte para a seccionadora</li>
+          <li><i></i>Plano de corte por chapa</li>
           <li><i></i>Etiquetas de peça com código de rastreio</li>
           <li><i></i>Resumo de material e orla para orçamento</li>
         </ul>
@@ -186,17 +250,66 @@
     </div>
   </section>
 
-  <!-- CTA -->
+  <!-- FAQ -->
+  <section class="band" id="faq">
+    <div class="wrap faq-wrap">
+      <div class="sec-head">
+        <p class="eyebrow mono">Perguntas</p>
+        <h2>Antes de entrar na lista.</h2>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>O que é o OptiMOB?</summary>
+          <p>Uma extensão para SketchUp com blocos de mobiliário paramétricos. Cada bloco é um móvel construído peça a peça, que se ajusta quando muda as medidas e gera a lista de corte, as orlas e o plano de corte.</p>
+        </details>
+        <details>
+          <summary>Preciso de saber programar ou de usar componentes dinâmicos?</summary>
+          <p>Não. Trabalha com valores: largura, altura, profundidade, número de módulos e prateleiras. O OptiMOB trata das contas.</p>
+        </details>
+        <details>
+          <summary>Como funciona o acesso antecipado?</summary>
+          <p>Deixa o seu email e o tipo de trabalho que faz. Quando a versão de teste estiver pronta, escrevemos-lhe com as instruções de instalação. Usamos o seu email apenas para isso.</p>
+        </details>
+        <details>
+          <summary>Quanto vai custar?</summary>
+          <p>Os preços serão anunciados no lançamento. Quem está na lista de espera é o primeiro a saber.</p>
+        </details>
+        <details>
+          <summary>Tenho uma dúvida que não está aqui.</summary>
+          <p>Escreva para <span class="mono sel">ola@optimob.design</span> e respondemos.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
   <section class="cta" id="acesso">
     <div class="wrap cta-in">
       <div class="cta-logo">{{LOGO}}</div>
-      <h2>Acesso antecipado à versão 1.0.</h2>
-      <p>O OptiMOB chega em breve à Extension Warehouse. Escreva-nos para entrar no grupo de oficinas que testa a primeira versão.</p>
-      <div class="mail">
-        <span class="mono" id="mailAddr">ola@optimob.design</span>
-        <button type="button" class="btn btn-solid" id="copyMail">Copiar email</button>
-      </div>
-      <p class="mono copied" id="copiedMsg" aria-live="polite"></p>
+      <h2>Seja das primeiras oficinas a usar o OptiMOB.</h2>
+      <p>Entre na lista de acesso antecipado e receba a versão de teste assim que estiver pronta.</p>
+
+      <form class="wl wl-final" name="lista-espera-final" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+        <input type="hidden" name="form-name" value="lista-espera-final">
+        <input type="hidden" name="origem" value="final">
+        <p class="hp" aria-hidden="true"><label>Não preencher <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <div class="wl-row">
+          <label class="wl-f wl-email" for="wlEmail2"><span class="mono">Email</span>
+            <input type="email" id="wlEmail2" name="email" required autocomplete="email" placeholder="nome@oficina.com">
+          </label>
+          <label class="wl-f wl-perfil" for="wlPerfil2"><span class="mono">Sou</span>
+            <select id="wlPerfil2" name="perfil" required>
+              <option value="" disabled selected>Escolher</option>
+              <option>Marcenaria</option>
+              <option>Designer de interiores</option>
+              <option>Fábrica de mobiliário</option>
+              <option>Outro</option>
+            </select>
+          </label>
+          <button type="submit" class="btn btn-solid wl-btn">Quero acesso antecipado <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="wl-msg mono" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </section>
 </main>
@@ -204,7 +317,7 @@
 <footer class="foot">
   <div class="wrap foot-in">
     <div class="foot-brand">{{SIMBOLO}}<div><b>OptiMOB</b><span class="mono">Furniture Design System · SketchUp Extension</span></div></div>
-    <span class="mono foot-c">© 2026 OptiMOB</span>
+    <span class="mono foot-c">© 2026 OptiMOB · ola@optimob.design</span>
   </div>
 </footer>
 
