@@ -583,7 +583,7 @@ input[type=range]:focus-visible{outline-offset:4px}
         </details>
         <details>
           <summary>Tenho uma dúvida que não está aqui.</summary>
-          <p>Escreva para <span class="mono sel">ola@optimob.design</span> e respondemos.</p>
+          <p>Escreva para <span class="mono sel">optimobsystem@gmail.com</span> e respondemos.</p>
         </details>
       </div>
     </div>
@@ -634,7 +634,7 @@ input[type=range]:focus-visible{outline-offset:4px}
 <footer class="foot">
   <div class="wrap foot-in">
     <div class="foot-brand"><svg role="img" aria-label="OptiMOB" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50.0" cy="40.0" r="27.0" fill="none" stroke="#EEF0EA" stroke-width="7.8"/><rect x="45.71" y="35.71" width="8.58" height="8.58" fill="#3AA0FF"/><rect x="20.0" y="81.5" width="47.0" height="5.0" fill="#3AA0FF"/><rect x="20.0" y="78.54" width="5.0" height="10.92" fill="#3AA0FF"/><rect x="67.0" y="77.5" width="13.0" height="13.0" fill="#3AA0FF"/></svg><div><b>OptiMOB</b><span class="mono">Furniture Design System · SketchUp Extension</span></div></div>
-    <span class="mono foot-c">© 2026 OptiMOB · ola@optimob.design</span>
+    <span class="mono foot-c">© 2026 OptiMOB · optimobsystem@gmail.com</span>
   </div>
 </footer>
 
@@ -1039,11 +1039,11 @@ input[type=range]:focus-visible{outline-offset:4px}
         btn.disabled = true;
       }
       if (PREVIEW) { done(); return; }
-      if (NO_SERVICE) { say('A inscrição online abre em breve. Até lá, escreva para ola@optimob.design com o assunto "Lista de espera".'); return; }
+      if (NO_SERVICE) { say('A inscrição online abre em breve. Até lá, escreva para optimobsystem@gmail.com com o assunto "Lista de espera".'); return; }
       btn.disabled = true; say('A registar…');
       fetch(FORM_ENDPOINT || '/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' }, body: new URLSearchParams(new FormData(form)).toString() })
         .then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
-        .catch(function () { btn.disabled = false; say('Não foi possível registar agora. Tente outra vez ou escreva para ola@optimob.design.', 'err'); });
+        .catch(function () { btn.disabled = false; say('Não foi possível registar agora. Tente outra vez ou escreva para optimobsystem@gmail.com.', 'err'); });
     });
   });
 

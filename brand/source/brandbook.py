@@ -509,7 +509,7 @@ page('13', 'Papelaria', f'''
  <div class="card c-front"><div class="blueprint" style="position:absolute;inset:0;opacity:.6"></div><div style="width:58%;position:relative">{wm()}</div></div>
  <div class="card c-back"><div class="cb-top"><div style="width:44px">{sym()}</div><span class="mono">OPTIMOB</span></div>
   <div class="cb-name">Mateus Duarte</div><div class="mono cb-role">PRODUCT DESIGNER · FOUNDER</div>
-  <div class="mono cb-info">+244 9XX XXX XXX<br>ola@optimob.design<br>optimob.design</div>
+  <div class="mono cb-info">+244 9XX XXX XXX<br>optimobsystem@gmail.com<br>optimobsystem.com</div>
   <div class="cb-bar"></div></div>
  <div class="letter"><div class="lt-h"><div style="width:170px">{wm(c_opti=GRAPHITE, c_mob=DEEP, c_dot=DEEP, c_bar=DEEP)}</div><span class="mono">REF. OPT-2026-014</span></div>
   <div class="lt-lines">{''.join(f'<i style="width:{w}%"></i>' for w in (40, 0, 92, 96, 88, 94, 60, 0, 90, 95, 72))}</div>
@@ -623,7 +623,7 @@ page('', '', f'''
 <div class="cover-grid"></div>
 <div class="back-sym">{sym()}</div>
 <div class="back-txt"><div style="width:280px">{wm()}</div><div class="mono" style="margin-top:22px;color:{ASH};font-size:12px;letter-spacing:.32em">BRAND GUIDELINES · v1.0 · 2026</div></div>
-<div class="mono back-f"><span>optimob.design</span><span>Este documento define as normas de utilização da marca OptiMOB.</span></div>
+<div class="mono back-f"><span>optimobsystem.com</span><span>Este documento define as normas de utilização da marca OptiMOB.</span></div>
 ''', 'dark cover', num=False)
 
 # ------------------------------------------------------------------ CSS

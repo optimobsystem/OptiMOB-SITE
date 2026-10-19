@@ -154,7 +154,7 @@ body{{font-family:'Inter Display','Inter',sans-serif;color:{fg};background:{GRAP
 </style></head><body><div class="post"><div class="grid"></div>
 <i class="corner c1"></i><i class="corner c2"></i><i class="corner c3"></i><i class="corner c4"></i>
 {body}
-<div class="foot"><div class="lg">{foot_logo}</div><span>optimob.design</span></div>
+<div class="foot"><div class="lg">{foot_logo}</div><span>optimobsystem.com</span></div>
 </div></body></html>'''
 
 

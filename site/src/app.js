@@ -399,11 +399,11 @@
         btn.disabled = true;
       }
       if (PREVIEW) { done(); return; }
-      if (NO_SERVICE) { say('A inscrição online abre em breve. Até lá, escreva para ola@optimob.design com o assunto "Lista de espera".'); return; }
+      if (NO_SERVICE) { say('A inscrição online abre em breve. Até lá, escreva para optimobsystem@gmail.com com o assunto "Lista de espera".'); return; }
       btn.disabled = true; say('A registar…');
       fetch(FORM_ENDPOINT || '/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' }, body: new URLSearchParams(new FormData(form)).toString() })
         .then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
-        .catch(function () { btn.disabled = false; say('Não foi possível registar agora. Tente outra vez ou escreva para ola@optimob.design.', 'err'); });
+        .catch(function () { btn.disabled = false; say('Não foi possível registar agora. Tente outra vez ou escreva para optimobsystem@gmail.com.', 'err'); });
     });
   });
 
