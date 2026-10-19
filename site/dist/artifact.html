@@ -1014,13 +1014,14 @@ input[type=range]:focus-visible{outline-offset:4px}
 
   // ---------- lista de espera ----------
   // Para onde vão os registos:
-  //  - FORM_ENDPOINT vazio  -> Netlify Forms (o Netlify recebe o POST para "/").
+  //  - USE_NETLIFY_FORMS = true -> Netlify Forms (o Netlify recebe o POST para "/").
   //  - FORM_ENDPOINT com URL -> serviço externo, por exemplo Formspree ('https://formspree.io/f/xxxxxxx').
   //    Necessário no GitHub Pages, que não recebe formulários.
   // Na pré-visualização (build.py marca window.OPTIMOB_PREVIEW) não há servidor para receber.
   var FORM_ENDPOINT = '';
+  var USE_NETLIFY_FORMS = false;   // true só se o site estiver alojado no Netlify
   var PREVIEW = !!window.OPTIMOB_PREVIEW || location.protocol === 'file:';
-  var NO_SERVICE = !FORM_ENDPOINT && /\.github\.io$/i.test(location.hostname);
+  var NO_SERVICE = !FORM_ENDPOINT && !USE_NETLIFY_FORMS;
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   document.querySelectorAll('form.wl').forEach(function (form) {
     var msg = form.querySelector('.wl-msg'), btn = form.querySelector('.wl-btn');
