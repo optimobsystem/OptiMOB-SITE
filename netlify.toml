@@ -1,0 +1,13 @@
+# Netlify: publica o site já montado em site/dist.
+# O site/dist/index.html é gerado com `python3 site/build.py` e guardado no repositório,
+# por isso o Netlify não precisa de correr nenhum comando de build.
+[build]
+  publish = "site/dist"
+  command = ""
+
+# a página de pré-visualização (artifact.html) não faz parte do site público
+[[redirects]]
+  from = "/artifact.html"
+  to = "/"
+  status = 301
+  force = true
