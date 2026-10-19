@@ -372,38 +372,48 @@
     $('labels').innerHTML = out;
   }
 
-  // ---------- lista de espera ----------
-  // Para onde vão os registos:
-  //  - USE_NETLIFY_FORMS = true -> Netlify Forms (o Netlify recebe o POST para "/").
-  //  - FORM_ENDPOINT com URL -> serviço externo, por exemplo Formspree ('https://formspree.io/f/xxxxxxx').
-  //    Necessário no GitHub Pages, que não recebe formulários.
-  // Na pré-visualização (build.py marca window.OPTIMOB_PREVIEW) não há servidor para receber.
-  var FORM_ENDPOINT = '';
-  var USE_NETLIFY_FORMS = false;   // true só se o site estiver alojado no Netlify
+  // ---------- lista de espera (Supabase) ----------
+  // Os registos vão para a tabela public.lista_espera do Supabase (ver supabase/lista_espera.sql).
+  // A chave usada aqui é a chave PÚBLICA do projeto (anon / publishable): com a regra de segurança
+  // da tabela, só permite INSERIR registos — não permite ler, alterar nem apagar.
+  // Sem URL/chave preenchidos, o formulário mostra o email de contacto.
+  // Na pré-visualização (build.py marca window.OPTIMOB_PREVIEW) nada é enviado.
+  var SUPABASE_URL = '';
+  var SUPABASE_KEY = '';
+  var CONTACT = 'optimobsystem@gmail.com';
   var PREVIEW = !!window.OPTIMOB_PREVIEW || location.protocol === 'file:';
-  var NO_SERVICE = !FORM_ENDPOINT && !USE_NETLIFY_FORMS;
+  var NO_SERVICE = !SUPABASE_URL || !SUPABASE_KEY;
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   document.querySelectorAll('form.wl').forEach(function (form) {
     var msg = form.querySelector('.wl-msg'), btn = form.querySelector('.wl-btn');
     function say(text, kind) { msg.textContent = text; msg.className = 'wl-msg mono' + (kind ? ' ' + kind : ''); }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var email = form.elements.email, perfil = form.elements.perfil;
-      email.removeAttribute('aria-invalid'); perfil.removeAttribute('aria-invalid');
+      var email = form.elements.email, perfil = form.elements.perfil, ok = form.elements.consentimento;
+      [email, perfil, ok].forEach(function (el) { el.removeAttribute('aria-invalid'); });
       if (!EMAIL_RE.test(email.value.trim())) { email.setAttribute('aria-invalid', 'true'); email.focus(); say('Escreva um email válido, por exemplo nome@oficina.com.', 'err'); return; }
       if (!perfil.value) { perfil.setAttribute('aria-invalid', 'true'); perfil.focus(); say('Escolha o tipo de trabalho que faz.', 'err'); return; }
-      var addr = email.value.trim();
-      function done() {
-        form.classList.add('ok');
-        say(PREVIEW ? 'Pré-visualização: no site publicado, ' + addr + ' entra na lista de espera.' : 'Está na lista. Vamos escrever para ' + addr + ' quando a versão de teste estiver pronta.', 'ok');
-        btn.disabled = true;
+      if (!ok.checked) { ok.setAttribute('aria-invalid', 'true'); ok.focus(); say('Para entrar na lista, aceite que guardemos o seu email.', 'err'); return; }
+      var addr = email.value.trim().toLowerCase();
+      function done(text) {
+        form.classList.add('ok'); btn.disabled = true;
+        say(text || (PREVIEW ? 'Pré-visualização: no site publicado, ' + addr + ' entra na lista de espera.' : 'Está na lista. Vamos escrever para ' + addr + ' quando a versão de teste estiver pronta.'), 'ok');
       }
       if (PREVIEW) { done(); return; }
-      if (NO_SERVICE) { say('A inscrição online abre em breve. Até lá, escreva para optimobsystem@gmail.com com o assunto "Lista de espera".'); return; }
+      if (NO_SERVICE) { say('A inscrição online abre em breve. Até lá, escreva para ' + CONTACT + ' com o assunto "Lista de espera".'); return; }
+      if (form.elements['bot-field'] && form.elements['bot-field'].value) { done(); return; }   // armadilha anti-spam
       btn.disabled = true; say('A registar…');
-      fetch(FORM_ENDPOINT || '/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' }, body: new URLSearchParams(new FormData(form)).toString() })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
-        .catch(function () { btn.disabled = false; say('Não foi possível registar agora. Tente outra vez ou escreva para optimobsystem@gmail.com.', 'err'); });
+      fetch(SUPABASE_URL + '/rest/v1/lista_espera', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ email: addr, perfil: perfil.value, origem: form.elements.origem ? form.elements.origem.value : null, consentimento: true })
+      })
+        .then(function (r) {
+          if (r.status === 409) return done('Este email já está na lista. Vamos escrever para ' + addr + '.');
+          if (!r.ok) throw new Error(r.status);
+          done();
+        })
+        .catch(function () { btn.disabled = false; say('Não foi possível registar agora. Tente outra vez ou escreva para ' + CONTACT + '.', 'err'); });
     });
   });
 

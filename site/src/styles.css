@@ -297,3 +297,12 @@ input[type=range]:focus-visible{outline-offset:4px}
 .faq details p{color:var(--ash);padding:0 40px 24px 0;max-width:62ch}
 .sel{user-select:all;color:var(--bone)}
 @media (max-width:900px){.faq-wrap{grid-template-columns:minmax(0,1fr);gap:36px}}
+
+/* consentimento da lista de espera */
+.wl-ok{display:flex;gap:12px;align-items:flex-start;margin-top:14px;font-size:.84rem;line-height:1.45;color:var(--ash);cursor:pointer}
+.wl-ok input{position:absolute;opacity:0;pointer-events:none}
+.wl-ok .tg-box{flex:none;width:16px;height:16px;margin-top:2px;border:1px solid var(--ash);display:grid;place-items:center}
+.wl-ok input:checked+.tg-box{border-color:var(--blue)}
+.wl-ok input:checked+.tg-box::after{content:"";width:8px;height:8px;background:var(--blue)}
+.wl-ok input:focus-visible+.tg-box{outline:2px solid var(--blue);outline-offset:2px}
+.wl-ok input[aria-invalid=true]+.tg-box{border-color:var(--err)}
