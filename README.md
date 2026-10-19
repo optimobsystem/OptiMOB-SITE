@@ -104,3 +104,14 @@ caminho `INTER` em `logo.py`).
 | Aço | `#2A2F30` | Linhas e divisões |
 | Cinza Técnico | `#8A918F` | Texto secundário |
 | Azul Profundo | `#1F6FC2` | Azul sobre fundos claros |
+
+## Lista de espera (Supabase)
+
+As inscrições do formulário vão para a tabela `lista_espera` do projeto Supabase **optimob**
+(região eu-west-2). A estrutura e a regra de segurança estão em `supabase/lista_espera.sql`.
+
+- O site usa só a chave **publishable** (pública). Com a regra de segurança, essa chave apenas
+  consegue **inserir** inscrições; não lê, não altera e não apaga.
+- Para ver as inscrições: Supabase › projeto optimob › **Table Editor** › `lista_espera`.
+  Também dá para exportar em CSV a partir daí.
+- Nunca colocar a *secret key* nem a *service_role* no site ou no repositório.

@@ -378,8 +378,8 @@
   // da tabela, só permite INSERIR registos — não permite ler, alterar nem apagar.
   // Sem URL/chave preenchidos, o formulário mostra o email de contacto.
   // Na pré-visualização (build.py marca window.OPTIMOB_PREVIEW) nada é enviado.
-  var SUPABASE_URL = '';
-  var SUPABASE_KEY = '';
+  var SUPABASE_URL = 'https://imwwomgxyqecpvyxqqyv.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_aPdtFzlmBhExIxuwOT2tBw_tBnNkTSZ';   // chave pública (publishable)
   var CONTACT = 'optimobsystem@gmail.com';
   var PREVIEW = !!window.OPTIMOB_PREVIEW || location.protocol === 'file:';
   var NO_SERVICE = !SUPABASE_URL || !SUPABASE_KEY;

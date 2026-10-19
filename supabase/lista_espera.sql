@@ -16,12 +16,11 @@ create unique index if not exists lista_espera_email_unico on public.lista_esper
 -- Segurança: o site (chave pública) só pode INSERIR. Ninguém de fora pode ler, alterar ou apagar.
 alter table public.lista_espera enable row level security;
 
-drop policy if exists "site pode inscrever" on public.lista_espera;
 create policy "site pode inscrever"
   on public.lista_espera
   for insert
   to anon
   with check (consentimento = true);
 
-revoke all on public.lista_espera from anon, authenticated;
-grant insert (email, perfil, origem, consentimento) on public.lista_espera to anon;
+-- Sem políticas de SELECT, UPDATE ou DELETE: com RLS ativo, essas operações ficam bloqueadas
+-- para a chave pública. Só o dono do projeto vê os registos (Table Editor / service role).
