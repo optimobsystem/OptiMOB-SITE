@@ -100,15 +100,46 @@ def post_param(h):
 '''
 
 
-LANGS = [('PT', 'Português', 'Largura'), ('EN', 'English', 'Width'), ('ES', 'Español', 'Ancho'), ('FR', 'Français', 'Largeur')]
+import math
+
+
+def star(cx, cy, r, rot=0):
+    pts = []
+    for k in range(10):
+        a = math.radians(-90 + rot + k * 36)
+        rr = r if k % 2 == 0 else r * 0.382
+        pts.append(f'{cx + rr*math.cos(a):.2f},{cy + rr*math.sin(a):.2f}')
+    return f'<polygon points="{" ".join(pts)}" fill="#FFDE00"/>'
+
+
+FLAGS = {  # desenhos simplificados, 60 × 40
+    'PT': '<rect width="60" height="40" fill="#DA291C"/><rect width="24" height="40" fill="#046A38"/>'
+          '<circle cx="24" cy="20" r="8.5" fill="none" stroke="#FFE900" stroke-width="2.4"/>'
+          '<path d="M19.5 14.5h9v6.5a4.5 4.5 0 0 1-9 0z" fill="#fff"/><path d="M21 16h6v5a3 3 0 0 1-6 0z" fill="#DA291C"/>',
+    'EN': '<rect width="60" height="40" fill="#012169"/><path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/>'
+          '<path d="M0 0L60 40M60 0L0 40" stroke="#C8102E" stroke-width="2.6"/><path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/>'
+          '<path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="7"/>',
+    'ES': '<rect width="60" height="40" fill="#AA151B"/><rect y="10" width="60" height="20" fill="#F1BF00"/>',
+    'FR': '<rect width="60" height="40" fill="#fff"/><rect width="20" height="40" fill="#002654"/><rect x="40" width="20" height="40" fill="#CE1126"/>',
+    'RU': '<rect width="60" height="40" fill="#fff"/><rect y="13.33" width="60" height="13.34" fill="#0039A6"/><rect y="26.67" width="60" height="13.33" fill="#D52B1E"/>',
+    'AR': '<rect width="60" height="40" fill="#fff"/><rect width="60" height="13.33" fill="#00732F"/><rect y="26.67" width="60" height="13.33" fill="#000"/><rect width="15" height="40" fill="#FF0000"/>',
+    'VI': '<rect width="60" height="40" fill="#DA251D"/>' + star(30, 20.5, 12),
+    'ZH': '<rect width="60" height="40" fill="#EE1C25"/>' + star(10, 10, 6) + star(20, 4, 2, 23) + star(24, 8, 2, 45) + star(24, 14, 2, 0) + star(20, 18, 2, 21),
+}
+
+LANGS = [('PT', 'Português', 'Largura', 'ltr'), ('EN', 'English', 'Width', 'ltr'),
+         ('ES', 'Español', 'Ancho', 'ltr'), ('FR', 'Français', 'Largeur', 'ltr'),
+         ('RU', 'Русский', 'Ширина', 'ltr'), ('AR', 'العربية', 'العرض', 'rtl'),
+         ('VI', 'Tiếng Việt', 'Chiều rộng', 'ltr'), ('ZH', '中文', '宽度', 'ltr')]
 
 
 def post_idiomas(h):
-    rows = ''.join(f'''<div class="lg-row{' on' if i == 0 else ''}"><i>{c}</i><em>{n}</em><b>{w}</b><span>1800<small>mm</small></span></div>'''
-                   for i, (c, n, w) in enumerate(LANGS))
+    cards = ''.join(f'''<div class="lc{' on' if i == 0 else ''}"><svg class="fl" viewBox="0 0 60 40" preserveAspectRatio="none">{FLAGS[c]}</svg>
+<div class="lt"><em>{c} · <span dir="{d}">{n}</span></em><b dir="{d}">{w}</b></div></div>'''
+                    for i, (c, n, w, d) in enumerate(LANGS))
     return 'dark', f'''
 <div class="lbl">Multilíngue · {len(LANGS)} idiomas</div>
-<div class="grow langs"><div class="lg-box">{rows}</div></div>
+<div class="grow langs"><div class="lg-grid">{cards}</div></div>
 <p class="cap">Uma extensão.<br><span>Na língua da sua oficina.</span></p>
 '''
 
@@ -125,6 +156,7 @@ def page(kind_body, h):
     return f'''<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{{font-family:'JetBrains Mono';font-weight:400;src:url({(FONTS/'jetbrains-mono-latin-400-normal.woff2').as_uri()})}}
 @font-face{{font-family:'JetBrains Mono';font-weight:500;src:url({(FONTS/'jetbrains-mono-latin-500-normal.woff2').as_uri()})}}
+@font-face{{font-family:'Noto Sans Arabic';font-weight:600;src:url({(FONTS/'noto-sans-arabic-arabic-600-normal.woff2').as_uri()})}}
 @font-face{{font-family:'JetBrains Mono';font-weight:700;src:url({(FONTS/'jetbrains-mono-latin-700-normal.woff2').as_uri()})}}
 *{{box-sizing:border-box;margin:0;padding:0}}
 html,body{{width:1080px;height:{h}px;overflow:hidden}}
@@ -161,20 +193,15 @@ body{{font-family:'Inter Display','Inter',sans-serif;color:{fg};background:{GRAP
 .sl-r .hd{{position:absolute;top:0;width:30px;height:30px;margin-left:-15px;background:{BLUE};box-shadow:0 0 0 8px {GRAPHITE}}}
 .cap{{font-size:{38 if sq else 46}px;font-weight:600;letter-spacing:-.03em;line-height:1.1;padding-bottom:{40 if sq else 56}px}}
 .cap span{{color:{BLUE};font-weight:500}}
-.langs{{padding:{24 if sq else 40}px 0}}
-.lg-box{{width:100%;border:2px solid {STEEL};background:rgba(17,19,19,.6)}}
-.lg-row{{display:grid;grid-template-columns:110px 1fr auto;grid-template-rows:auto auto;column-gap:30px;align-items:center;padding:{22 if sq else 34}px 36px;border-top:2px solid {STEEL};position:relative}}
-.lg-row:first-child{{border-top:0}}
-.lg-row i{{grid-row:1/3;font:700 34px 'JetBrains Mono';font-style:normal;letter-spacing:.08em;color:{ASH};border:2px solid {STEEL};height:76px;display:flex;align-items:center;justify-content:center}}
-.lg-row em{{font:400 20px 'JetBrains Mono';font-style:normal;letter-spacing:.22em;text-transform:uppercase;color:{ASH}}}
-.lg-row b{{grid-column:2;font-size:{54 if sq else 62}px;font-weight:600;letter-spacing:-.03em;line-height:1.05;color:{ASH}}}
-.lg-row span{{grid-column:3;grid-row:1/3;font:500 {44 if sq else 52}px 'JetBrains Mono';color:{ASH}}}
-.lg-row small{{font-size:22px;margin-left:8px;letter-spacing:.05em}}
-.lg-row.on{{background:rgba(58,160,255,.10)}}
-.lg-row.on::before{{content:"";position:absolute;left:-2px;top:-2px;bottom:-2px;width:8px;background:{BLUE}}}
-.lg-row.on i{{color:{GRAPHITE};background:{BLUE};border-color:{BLUE}}}
-.lg-row.on b,.lg-row.on span{{color:{BONE}}}
-.lg-row.on em{{color:{BLUE}}}
+.langs{{padding:{26 if sq else 44}px 0}}
+.lg-grid{{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:{16 if sq else 22}px}}
+.lc{{display:flex;align-items:center;gap:26px;padding:{20 if sq else 30}px 26px;border:2px solid {STEEL};background:rgba(17,19,19,.55);position:relative}}
+.lc .fl{{width:{84 if sq else 96}px;height:{56 if sq else 64}px;flex:none;box-shadow:0 0 0 2px rgba(238,240,234,.12)}}
+.lc .lt{{min-width:0;display:flex;flex-direction:column;gap:{6 if sq else 10}px}}
+.lc em{{font:500 18px 'JetBrains Mono','Noto Sans CJK SC','Noto Sans Arabic';font-style:normal;letter-spacing:.16em;text-transform:uppercase;color:{ASH};white-space:nowrap}}
+.lc b{{font-family:'Inter Display','Inter','Noto Sans CJK SC','Noto Sans Arabic',sans-serif;font-size:{40 if sq else 46}px;font-weight:600;letter-spacing:-.02em;line-height:1.1;color:{BONE};white-space:nowrap;text-align:left}}
+.lc.on{{border-color:{BLUE};background:rgba(58,160,255,.12)}}
+.lc.on em{{color:{BLUE}}}
 .foot{{display:flex;justify-content:space-between;align-items:center;border-top:2px solid {STEEL if dark else '#D5D9D2'};padding-top:30px}}
 .foot .lg{{width:190px}}
 .foot span{{font:400 22px 'JetBrains Mono';letter-spacing:.2em;color:{ASH};text-transform:uppercase}}
