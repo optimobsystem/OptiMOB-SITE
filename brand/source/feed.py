@@ -100,7 +100,20 @@ def post_param(h):
 '''
 
 
-POSTS = {'01-nesting': post_nesting, '02-manifesto': post_manifesto, '03-parametros': post_param}
+LANGS = [('PT', 'Português', 'Largura'), ('EN', 'English', 'Width'), ('ES', 'Español', 'Ancho'), ('FR', 'Français', 'Largeur')]
+
+
+def post_idiomas(h):
+    rows = ''.join(f'''<div class="lg-row{' on' if i == 0 else ''}"><i>{c}</i><em>{n}</em><b>{w}</b><span>1800<small>mm</small></span></div>'''
+                   for i, (c, n, w) in enumerate(LANGS))
+    return 'dark', f'''
+<div class="lbl">Multilíngue · {len(LANGS)} idiomas</div>
+<div class="grow langs"><div class="lg-box">{rows}</div></div>
+<p class="cap">Uma extensão.<br><span>Na língua da sua oficina.</span></p>
+'''
+
+
+POSTS = {'01-nesting': post_nesting, '02-manifesto': post_manifesto, '03-parametros': post_param, '04-idiomas': post_idiomas}
 
 
 def page(kind_body, h):
@@ -148,6 +161,20 @@ body{{font-family:'Inter Display','Inter',sans-serif;color:{fg};background:{GRAP
 .sl-r .hd{{position:absolute;top:0;width:30px;height:30px;margin-left:-15px;background:{BLUE};box-shadow:0 0 0 8px {GRAPHITE}}}
 .cap{{font-size:{38 if sq else 46}px;font-weight:600;letter-spacing:-.03em;line-height:1.1;padding-bottom:{40 if sq else 56}px}}
 .cap span{{color:{BLUE};font-weight:500}}
+.langs{{padding:{24 if sq else 40}px 0}}
+.lg-box{{width:100%;border:2px solid {STEEL};background:rgba(17,19,19,.6)}}
+.lg-row{{display:grid;grid-template-columns:110px 1fr auto;grid-template-rows:auto auto;column-gap:30px;align-items:center;padding:{22 if sq else 34}px 36px;border-top:2px solid {STEEL};position:relative}}
+.lg-row:first-child{{border-top:0}}
+.lg-row i{{grid-row:1/3;font:700 34px 'JetBrains Mono';font-style:normal;letter-spacing:.08em;color:{ASH};border:2px solid {STEEL};height:76px;display:flex;align-items:center;justify-content:center}}
+.lg-row em{{font:400 20px 'JetBrains Mono';font-style:normal;letter-spacing:.22em;text-transform:uppercase;color:{ASH}}}
+.lg-row b{{grid-column:2;font-size:{54 if sq else 62}px;font-weight:600;letter-spacing:-.03em;line-height:1.05;color:{ASH}}}
+.lg-row span{{grid-column:3;grid-row:1/3;font:500 {44 if sq else 52}px 'JetBrains Mono';color:{ASH}}}
+.lg-row small{{font-size:22px;margin-left:8px;letter-spacing:.05em}}
+.lg-row.on{{background:rgba(58,160,255,.10)}}
+.lg-row.on::before{{content:"";position:absolute;left:-2px;top:-2px;bottom:-2px;width:8px;background:{BLUE}}}
+.lg-row.on i{{color:{GRAPHITE};background:{BLUE};border-color:{BLUE}}}
+.lg-row.on b,.lg-row.on span{{color:{BONE}}}
+.lg-row.on em{{color:{BLUE}}}
 .foot{{display:flex;justify-content:space-between;align-items:center;border-top:2px solid {STEEL if dark else '#D5D9D2'};padding-top:30px}}
 .foot .lg{{width:190px}}
 .foot span{{font:400 22px 'JetBrains Mono';letter-spacing:.2em;color:{ASH};text-transform:uppercase}}
@@ -174,7 +201,7 @@ def main():
             pg.close()
         # pré-visualização lado a lado
         imgs = ''.join(f'<img src="{(OUT/"4x5"/f"{n}.png").as_uri()}">' for n in POSTS)
-        pg = b.new_page(viewport={'width': 1800, 'height': 760})
+        pg = b.new_page(viewport={'width': 40 + 584 * len(POSTS), 'height': 780})
         tmp.write_text(f'<body style="margin:0;background:#0c0d0d;display:flex;gap:24px;padding:40px">'
                        f'<style>img{{width:560px;height:700px;display:block}}</style>{imgs}</body>')
         pg.goto(tmp.as_uri())
