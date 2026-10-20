@@ -113,9 +113,9 @@ def star(cx, cy, r, rot=0):
 
 
 FLAGS = {  # desenhos simplificados, 60 × 40
-    'PT': '<rect width="60" height="40" fill="#DA291C"/><rect width="24" height="40" fill="#046A38"/>'
-          '<circle cx="24" cy="20" r="8.5" fill="none" stroke="#FFE900" stroke-width="2.4"/>'
-          '<path d="M19.5 14.5h9v6.5a4.5 4.5 0 0 1-9 0z" fill="#fff"/><path d="M21 16h6v5a3 3 0 0 1-6 0z" fill="#DA291C"/>',
+    'PT': '<rect width="60" height="40" fill="#009C3B"/><path d="M30 4.5L55 20L30 35.5L5 20z" fill="#FFDF00"/>'
+          '<circle cx="30" cy="20" r="9" fill="#002776"/>'
+          '<path d="M21.3 17.6c6-1.6 12.6-.9 17.6 2.4" fill="none" stroke="#fff" stroke-width="1.6"/>',
     'EN': '<rect width="60" height="40" fill="#012169"/><path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/>'
           '<path d="M0 0L60 40M60 0L0 40" stroke="#C8102E" stroke-width="2.6"/><path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/>'
           '<path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="7"/>',
