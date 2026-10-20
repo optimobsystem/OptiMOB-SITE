@@ -79,6 +79,60 @@ https://optimobsystem.com
 Para sair da lista, responda "remover". / To leave the list, reply "remove".`;
 }
 
+// Corre em segundo plano depois de responder ao webhook (Supabase Edge Runtime).
+declare const EdgeRuntime: { waitUntil(p: Promise<unknown>): void } | undefined;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const TENTATIVAS = 5;
+
+// Envia com repetição: se a Resend responder 429 (demasiados pedidos) ou 5xx, espera e tenta outra vez.
+// O Idempotency-Key garante que uma repetição nunca gera um segundo email para a mesma inscrição.
+async function enviar(rec: { id?: string; email: string; perfil?: string }) {
+  const body = JSON.stringify({
+    from: FROM,
+    to: [rec.email],
+    reply_to: REPLY_TO,
+    subject: "Está na lista de espera do OptiMOB · You're on the OptiMOB waitlist",
+    html: html(rec.email, rec.perfil ?? ""),
+    text: text(rec.email, rec.perfil ?? ""),
+  });
+  const chave = `lista-espera-${rec.id ?? rec.email}`;
+
+  for (let tentativa = 1; tentativa <= TENTATIVAS; tentativa++) {
+    let estado = 0, detalhe = "";
+    try {
+      const r = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+          "Idempotency-Key": chave,
+        },
+        body,
+      });
+      if (r.ok) {
+        console.log("Enviado", rec.email, "tentativa", tentativa);
+        return true;
+      }
+      estado = r.status;
+      detalhe = await r.text();
+      const repetir = estado === 429 || estado >= 500;
+      if (!repetir) {
+        console.error("Resend recusou", estado, detalhe);
+        return false;
+      }
+      const ra = Number(r.headers.get("retry-after"));
+      await sleep(ra > 0 ? ra * 1000 : 600 * 2 ** (tentativa - 1) + Math.random() * 300);
+    } catch (err) {
+      detalhe = String(err);
+      await sleep(600 * 2 ** (tentativa - 1));
+    }
+    console.warn("Nova tentativa", tentativa, rec.email, estado, detalhe.slice(0, 200));
+  }
+  console.error("Falhou após", TENTATIVAS, "tentativas:", rec.email);
+  return false;
+}
+
 Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
   if (!WEBHOOK_SECRET || req.headers.get("x-webhook-secret") !== WEBHOOK_SECRET) {
@@ -92,22 +146,11 @@ Deno.serve(async (req) => {
     return new Response("Ignorado", { status: 200 });
   }
 
-  const r = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: FROM,
-      to: [rec.email],
-      reply_to: REPLY_TO,
-      subject: "Está na lista de espera do OptiMOB · You're on the OptiMOB waitlist",
-      html: html(rec.email, rec.perfil ?? ""),
-      text: text(rec.email, rec.perfil ?? ""),
-    }),
-  });
-
-  if (!r.ok) {
-    console.error("Resend", r.status, await r.text());
-    return new Response("Falha no envio", { status: 502 });
+  const tarefa = enviar(rec);
+  if (typeof EdgeRuntime !== "undefined" && EdgeRuntime?.waitUntil) {
+    EdgeRuntime.waitUntil(tarefa);
+    return new Response("Aceite", { status: 202 });
   }
-  return new Response("Enviado", { status: 200 });
+  const ok = await tarefa;
+  return new Response(ok ? "Enviado" : "Falha no envio", { status: ok ? 200 : 502 });
 });

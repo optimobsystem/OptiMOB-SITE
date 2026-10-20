@@ -130,3 +130,9 @@ Configuração (uma vez):
 4. **Supabase › Database › Webhooks**: novo webhook na tabela `lista_espera`, evento *Insert*,
    tipo *Supabase Edge Functions* → `confirmar-inscricao`, com o cabeçalho
    `x-webhook-secret: <o mesmo WEBHOOK_SECRET>`.
+
+Várias inscrições ao mesmo tempo: a função responde logo ao webhook (202) e envia em segundo
+plano. Se a Resend devolver 429 (limite de pedidos) ou um erro 5xx, tenta outra vez até 5 vezes,
+com esperas crescentes. Cada envio leva um `Idempotency-Key` com o id da inscrição, por isso uma
+repetição nunca gera um email duplicado. As falhas definitivas ficam em
+*Edge Functions › confirmar-inscricao › Logs* ("Falhou após 5 tentativas").
