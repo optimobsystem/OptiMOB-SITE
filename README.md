@@ -115,3 +115,18 @@ As inscrições do formulário vão para a tabela `lista_espera` do projeto Supa
 - Para ver as inscrições: Supabase › projeto optimob › **Table Editor** › `lista_espera`.
   Também dá para exportar em CSV a partir daí.
 - Nunca colocar a *secret key* nem a *service_role* no site ou no repositório.
+
+### Email de confirmação (Resend + Supabase Edge Function)
+
+Código em `supabase/functions/confirmar-inscricao/index.ts`. Fluxo: nova linha em `lista_espera`
+→ Database Webhook → função `confirmar-inscricao` → Resend envia o email.
+
+Configuração (uma vez):
+1. **Resend**: criar conta, adicionar o domínio `optimobsystem.com` e colocar na Hostinger os
+   registos DNS que o Resend indicar (SPF/DKIM). Criar uma API key com permissão *Sending access*.
+2. **Supabase › Edge Functions**: criar a função `confirmar-inscricao` com o código acima e
+   desligar *Verify JWT* (a autenticação é feita pelo cabeçalho `x-webhook-secret`).
+3. **Supabase › Edge Functions › Secrets**: `RESEND_API_KEY` e `WEBHOOK_SECRET` (texto aleatório).
+4. **Supabase › Database › Webhooks**: novo webhook na tabela `lista_espera`, evento *Insert*,
+   tipo *Supabase Edge Functions* → `confirmar-inscricao`, com o cabeçalho
+   `x-webhook-secret: <o mesmo WEBHOOK_SECRET>`.
