@@ -27,3 +27,7 @@ create policy "site pode inscrever"
 
 -- língua do email de confirmação (pt, en, es, fr, ru, ar, vi, zh…), enviada pelo site
 alter table public.lista_espera add column if not exists idioma text check (idioma ~ '^[a-z]{2,3}(-[a-z0-9]{2,8})?$');
+
+-- email sem espaços nem "mailto:", "<>", aspas, etc. (o site já limpa; isto é a segunda barreira)
+-- "not valid": só se aplica a inscrições novas, não mexe nas que já existem
+alter table public.lista_espera add constraint lista_espera_email_limpo check (email !~ '[[:space:]:;,<>()"]') not valid;

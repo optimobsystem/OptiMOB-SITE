@@ -1034,7 +1034,13 @@ input[type=range]:focus-visible{outline-offset:4px}
   var CONTACT = 'optimobsystem@gmail.com';
   var PREVIEW = !!window.OPTIMOB_PREVIEW || location.protocol === 'file:';
   var NO_SERVICE = !SUPABASE_URL || !SUPABASE_KEY;
-  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var EMAIL_RE = /^[^\s@:;,<>()"]+@[^\s@:;,<>()"]+\.[^\s@:;,<>()".]{2,}$/;
+  // Limpa o que costuma vir colado com o email: "mailto:", "<...>", aspas, "?subject=…", espaços.
+  function limparEmail(v) {
+    v = String(v || '').trim().replace(/^mailto:/i, '').replace(/\?.*$/, '');
+    var m = v.match(/<([^>]+)>/); if (m) v = m[1];
+    return v.replace(/^["'\s]+|["'\s.,;]+$/g, '').replace(/\s+/g, '');
+  }
   // Língua do email de confirmação: a da página no momento da inscrição. Os tradutores dos navegadores
   // mudam o atributo lang do <html> (ou marcam-no com a classe translated-*); sem tradução fica "pt".
   function idioma() {
@@ -1050,10 +1056,11 @@ input[type=range]:focus-visible{outline-offset:4px}
       e.preventDefault();
       var email = form.elements.email, perfil = form.elements.perfil, ok = form.elements.consentimento;
       [email, perfil, ok].forEach(function (el) { el.removeAttribute('aria-invalid'); });
-      if (!EMAIL_RE.test(email.value.trim())) { email.setAttribute('aria-invalid', 'true'); email.focus(); say('Escreva um email válido, por exemplo nome@oficina.com.', 'err'); return; }
+      email.value = limparEmail(email.value);
+      if (!EMAIL_RE.test(email.value)) { email.setAttribute('aria-invalid', 'true'); email.focus(); say('Escreva um email válido, por exemplo nome@oficina.com.', 'err'); return; }
       if (!perfil.value) { perfil.setAttribute('aria-invalid', 'true'); perfil.focus(); say('Escolha o tipo de trabalho que faz.', 'err'); return; }
       if (!ok.checked) { ok.setAttribute('aria-invalid', 'true'); ok.focus(); say('Para entrar na lista, aceite que guardemos o seu email.', 'err'); return; }
-      var addr = email.value.trim().toLowerCase();
+      var addr = email.value.toLowerCase();
       function done(text) {
         form.classList.add('ok'); btn.disabled = true;
         say(text || (PREVIEW ? 'Pré-visualização: no site publicado, ' + addr + ' entra na lista de espera.' : 'Está na lista. Vamos escrever para ' + addr + ' quando a versão de teste estiver pronta.'), 'ok');
