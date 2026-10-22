@@ -1041,6 +1041,14 @@ input[type=range]:focus-visible{outline-offset:4px}
   var PREVIEW = !!window.OPTIMOB_PREVIEW || location.protocol === 'file:';
   var NO_SERVICE = !SUPABASE_URL || !SUPABASE_KEY;
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  // Língua do email de confirmação: a da página no momento da inscrição. Os tradutores dos navegadores
+  // mudam o atributo lang do <html> (ou marcam-no com a classe translated-*); sem tradução fica "pt".
+  function idioma() {
+    var h = document.documentElement, l = (h.getAttribute('lang') || 'pt').toLowerCase();
+    if (/^pt/.test(l) && /translated-(ltr|rtl)/.test(h.className)) l = (navigator.language || 'pt').toLowerCase();
+    l = l.replace('_', '-');
+    return /^[a-z]{2,3}(-[a-z0-9]{2,8})?$/.test(l) ? l : 'pt';
+  }
   document.querySelectorAll('form.wl').forEach(function (form) {
     var msg = form.querySelector('.wl-msg'), btn = form.querySelector('.wl-btn');
     function say(text, kind) { msg.textContent = text; msg.className = 'wl-msg mono' + (kind ? ' ' + kind : ''); }
@@ -1063,7 +1071,7 @@ input[type=range]:focus-visible{outline-offset:4px}
       fetch(SUPABASE_URL + '/rest/v1/lista_espera', {
         method: 'POST',
         headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ email: addr, perfil: perfil.value, origem: form.elements.origem ? form.elements.origem.value : null, consentimento: true })
+        body: JSON.stringify({ email: addr, perfil: perfil.value, origem: form.elements.origem ? form.elements.origem.value : null, consentimento: true, idioma: idioma() })
       })
         .then(function (r) {
           if (r.status === 409) return done('Este email já está na lista. Vamos escrever para ' + addr + '.');

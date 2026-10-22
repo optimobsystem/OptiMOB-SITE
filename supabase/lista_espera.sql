@@ -24,3 +24,6 @@ create policy "site pode inscrever"
 
 -- Sem políticas de SELECT, UPDATE ou DELETE: com RLS ativo, essas operações ficam bloqueadas
 -- para a chave pública. Só o dono do projeto vê os registos (Table Editor / service role).
+
+-- língua do email de confirmação (pt, en, es, fr, ru, ar, vi, zh…), enviada pelo site
+alter table public.lista_espera add column if not exists idioma text check (idioma ~ '^[a-z]{2,3}(-[a-z0-9]{2,8})?$');
