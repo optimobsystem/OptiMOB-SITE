@@ -136,3 +136,8 @@ plano. Se a Resend devolver 429 (limite de pedidos) ou um erro 5xx, tenta outra 
 com esperas crescentes. Cada envio leva um `Idempotency-Key` com o id da inscrição, por isso uma
 repetição nunca gera um email duplicado. As falhas definitivas ficam em
 *Edge Functions › confirmar-inscricao › Logs* ("Falhou após 5 tentativas").
+
+Língua do email: o site envia a língua em que a página estava na inscrição (coluna `idioma`,
+também quando a pessoa usa o tradutor do navegador). A função tem o texto em 39 línguas; numa
+língua sem tradução envia em inglês; inscrições sem idioma (antigas) recebem português + inglês.
+Para acrescentar uma língua, copie um bloco do objeto `L` em `index.ts` e traduza-o.
