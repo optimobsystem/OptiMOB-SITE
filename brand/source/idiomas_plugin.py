@@ -4,7 +4,10 @@ Uso: python3 brand/source/idiomas_plugin.py
 Gera brand/instagram/feed/4x5/05-languages-en.png (1080 × 1350) e
 brand/instagram/stories/languages-en.png (1080 × 1920).
 """
-import pathlib
+import pathlib, sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).parent))
+from bandeiras import svg as bandeira  # noqa: E402
 
 BRAND = pathlib.Path(__file__).resolve().parent.parent
 FONTS = BRAND / 'fonts'
@@ -41,7 +44,8 @@ def page(w, h, row, fs, title_fs, pad_top, langs=None, cols=1):
         ic = (CHECK if st == 'ok' else BETA).format(s=int(row * .5))
         on = code == SELECTED
         tag = '<span class="beta">BETA</span>' if st == 'beta' else ''
-        rows.append(f'<div class="r{" on" if on else ""}">{ic}<b>{code}</b><i></i><span class="n">{name}</span>{tag}'
+        fl = bandeira(code, row * .62)
+        rows.append(f'<div class="r{" on" if on else ""}">{ic}{fl}<b>{code}</b><i></i><span class="n">{name}</span>{tag}'
                     f'<span class="tk">{TICK if on else ""}</span></div>')
     sel = next(l for l in langs if l[0] == SELECTED)
     return f'''<!doctype html><html><head><meta charset="utf-8"><style>
@@ -71,12 +75,13 @@ h1 span{{color:#3AA0FF}}
 .sel b{{font:700 {fs}px 'JetBrains Mono'}} .sel i{{width:2px;height:{int(row*.5)}px;background:#2A2F30}} .sel .cv{{margin-left:auto;color:#3AA0FF}}
 .list{{margin:{int(row*.3)}px 24px 24px;border:2px solid #2A2F30;background:#1B1E1E;flex:1;display:flex;flex-direction:column}}
 .auto{{font-style:italic;color:#6F7674;font-size:{fs-2}px;padding:0 20px;height:{row}px;display:flex;align-items:center;border-bottom:2px solid #2A2F30}}
-.r{{display:flex;align-items:center;gap:14px;height:{row}px;padding:0 20px;font-size:{fs}px;color:#C9CDCB}}
+.r{{display:flex;align-items:center;gap:{12 if cols > 1 else 14}px;height:{row}px;padding:0 {14 if cols > 1 else 20}px;font-size:{fs}px;color:#C9CDCB}}
 .r b{{font:700 {fs}px 'JetBrains Mono';color:#EEF0EA;width:{int(fs*(2.4 if cols > 1 else 1.75))}px}}
 .r i{{width:2px;height:{int(row*.5)}px;background:#2A2F30}}
 .r .n{{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 .r .beta{{font:700 {fs-10}px 'JetBrains Mono';letter-spacing:.14em;color:#F0A04B;border:2px solid rgba(240,160,75,.5);padding:3px 8px}}
 .r .tk{{margin-left:auto;display:flex}}
+.flag{{flex:none;box-shadow:0 0 0 1px rgba(238,240,234,.18)}}
 .r.on{{background:rgba(58,160,255,.12);color:#EEF0EA;box-shadow:inset 4px 0 0 #3AA0FF}}
 .foot{{display:flex;justify-content:space-between;align-items:center;padding-top:28px}}
 .foot .lg{{width:200px}} .foot span{{font:500 21px 'JetBrains Mono';letter-spacing:.2em;color:#8A918F}}
@@ -86,7 +91,7 @@ h1 span{{color:#3AA0FF}}
 <h1>Available in<br><span>{len(langs)} languages.</span></h1>
 <div class="panel">
   <div class="head"><b>Language</b><span>↺ Restore defaults</span></div>
-  <div class="sel">{CHECK.format(s=int(row*.5))}<b>{sel[0]}</b><i></i>{sel[1]}<span class="cv">▾</span></div>
+  <div class="sel">{CHECK.format(s=int(row*.5))}{bandeira(sel[0], max(row, 48) * .62)}<b>{sel[0]}</b><i></i>{sel[1]}<span class="cv">▾</span></div>
   <div class="list"><div class="auto">Automatic</div><div class="rows" style="display:grid;grid-template-columns:repeat({cols},minmax(0,1fr));grid-auto-flow:column;grid-template-rows:repeat({-(-len(rows)//cols)},auto)">{"".join(rows)}</div></div>
 </div>
 <div class="foot"><div class="lg">{LOGO}</div><span>OPTIMOBSYSTEM.COM</span></div>
