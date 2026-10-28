@@ -413,6 +413,14 @@
       function done(text) {
         form.classList.add('ok'); btn.disabled = true;
         say(text || (PREVIEW ? 'Pré-visualização: no site publicado, ' + addr + ' entra na lista de espera.' : 'Está na lista. Vamos escrever para ' + addr + ' quando a versão de teste estiver pronta.'), 'ok');
+        // convite para o grupo do WhatsApp (o link vem do botão flutuante)
+        var wa = document.querySelector('.wa-float');
+        if (wa && !msg.querySelector('.wl-wa')) {
+          var a = document.createElement('a');
+          a.className = 'wl-wa'; a.href = wa.href; a.target = '_blank'; a.rel = 'noopener';
+          a.textContent = 'Entrar no grupo do WhatsApp →';
+          msg.appendChild(document.createElement('br')); msg.appendChild(a);
+        }
       }
       if (PREVIEW) { done(); return; }
       if (NO_SERVICE) { say('A inscrição online abre em breve. Até lá, escreva para ' + CONTACT + ' com o assunto "Lista de espera".'); return; }

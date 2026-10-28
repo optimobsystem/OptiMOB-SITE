@@ -356,24 +356,94 @@ const perfilEm = (t: T, perfil: string) => { const i = PERFIS.indexOf(perfil); r
 const P = 'style="font-size:15px;line-height:1.6;color:#C9CDCB;margin:0 0 14px"';
 const LABEL = 'style="font-family:Courier New,monospace;font-size:11px;letter-spacing:3px;color:#3AA0FF;text-transform:uppercase"';
 
-function bloco(t: T, email: string, perfil: string, tag: string, cta: boolean) {
+// ---------------------------------------------------------------- grupo do WhatsApp
+// Link de convite do grupo da lista de espera (pode ser trocado sem mexer no código: secret WHATSAPP_GROUP_URL).
+const WA_URL = Deno.env.get("WHATSAPP_GROUP_URL") ?? "https://chat.whatsapp.com/SEU-CONVITE";
+
+// [assunto do convite, título do convite, parágrafo, botão]
+const W: Record<string, [string, string, string, string]> = {
+  pt: ["O grupo do OptiMOB no WhatsApp já está aberto", "Criámos um grupo para a lista de espera.", "Entre no grupo da lista de espera no WhatsApp para receber novidades, vídeos e o acesso à versão de teste em primeira mão.", "Entrar no grupo do WhatsApp"],
+  en: ["The OptiMOB WhatsApp group is now open", "We created a group for the waitlist.", "Join the waitlist group on WhatsApp to get news, videos and beta access before anyone else.", "Join the WhatsApp group"],
+  es: ["Ya está abierto el grupo de OptiMOB en WhatsApp", "Creamos un grupo para la lista de espera.", "Únete al grupo de la lista de espera en WhatsApp para recibir novedades, vídeos y el acceso a la versión de prueba antes que nadie.", "Unirme al grupo de WhatsApp"],
+  fr: ["Le groupe WhatsApp d'OptiMOB est ouvert", "Nous avons créé un groupe pour la liste d'attente.", "Rejoignez le groupe de la liste d'attente sur WhatsApp pour recevoir les nouveautés, les vidéos et l'accès à la version de test en avant-première.", "Rejoindre le groupe WhatsApp"],
+  ru: ["Группа OptiMOB в WhatsApp открыта", "Мы создали группу для списка ожидания.", "Присоединяйтесь к группе списка ожидания в WhatsApp, чтобы первыми получать новости, видео и доступ к тестовой версии.", "Вступить в группу WhatsApp"],
+  ar: ["مجموعة OptiMOB على واتساب مفتوحة الآن", "أنشأنا مجموعة لقائمة الانتظار.", "انضم إلى مجموعة قائمة الانتظار على واتساب لتصلك الأخبار ومقاطع الفيديو والوصول إلى النسخة التجريبية قبل الجميع.", "الانضمام إلى مجموعة واتساب"],
+  vi: ["Nhóm WhatsApp của OptiMOB đã mở", "Chúng tôi đã tạo một nhóm cho danh sách chờ.", "Tham gia nhóm danh sách chờ trên WhatsApp để nhận tin tức, video và quyền dùng thử sớm nhất.", "Tham gia nhóm WhatsApp"],
+  zh: ["OptiMOB WhatsApp 群组已开放", "我们为候补名单建立了一个群组。", "加入 WhatsApp 候补名单群组，第一时间获取最新动态、视频和测试版使用资格。", "加入 WhatsApp 群组"],
+  de: ["Die OptiMOB-WhatsApp-Gruppe ist jetzt offen", "Wir haben eine Gruppe für die Warteliste erstellt.", "Treten Sie der Wartelisten-Gruppe auf WhatsApp bei und erhalten Sie Neuigkeiten, Videos und Zugang zur Testversion als Erste.", "Der WhatsApp-Gruppe beitreten"],
+  it: ["Il gruppo WhatsApp di OptiMOB è aperto", "Abbiamo creato un gruppo per la lista d'attesa.", "Unisciti al gruppo della lista d'attesa su WhatsApp per ricevere novità, video e l'accesso alla versione di prova in anteprima.", "Entra nel gruppo WhatsApp"],
+  nl: ["De WhatsApp-groep van OptiMOB is open", "We hebben een groep gemaakt voor de wachtlijst.", "Word lid van de wachtlijstgroep op WhatsApp en ontvang als eerste nieuws, video's en toegang tot de testversie.", "Lid worden van de WhatsApp-groep"],
+  pl: ["Grupa OptiMOB na WhatsAppie jest już otwarta", "Utworzyliśmy grupę dla listy oczekujących.", "Dołącz do grupy listy oczekujących na WhatsAppie, aby jako pierwszy otrzymywać nowości, filmy i dostęp do wersji testowej.", "Dołącz do grupy WhatsApp"],
+  tr: ["OptiMOB WhatsApp grubu açıldı", "Bekleme listesi için bir grup oluşturduk.", "Haberleri, videoları ve test sürümüne erişimi herkesten önce almak için WhatsApp'taki bekleme listesi grubuna katılın.", "WhatsApp grubuna katıl"],
+  el: ["Η ομάδα του OptiMOB στο WhatsApp άνοιξε", "Δημιουργήσαμε μια ομάδα για τη λίστα αναμονής.", "Μπείτε στην ομάδα της λίστας αναμονής στο WhatsApp για να λαμβάνετε πρώτοι νέα, βίντεο και πρόσβαση στη δοκιμαστική έκδοση.", "Είσοδος στην ομάδα WhatsApp"],
+  uk: ["Група OptiMOB у WhatsApp відкрита", "Ми створили групу для списку очікування.", "Приєднуйтеся до групи списку очікування у WhatsApp, щоб першими отримувати новини, відео та доступ до тестової версії.", "Приєднатися до групи WhatsApp"],
+  ro: ["Grupul OptiMOB pe WhatsApp este deschis", "Am creat un grup pentru lista de așteptare.", "Intră în grupul listei de așteptare pe WhatsApp pentru a primi primul noutăți, videoclipuri și acces la versiunea de test.", "Intră în grupul de WhatsApp"],
+  cs: ["Skupina OptiMOB na WhatsAppu je otevřená", "Vytvořili jsme skupinu pro čekací listinu.", "Připojte se ke skupině čekací listiny na WhatsAppu a získejte jako první novinky, videa a přístup k testovací verzi.", "Připojit se ke skupině WhatsApp"],
+  sk: ["Skupina OptiMOB na WhatsAppe je otvorená", "Vytvorili sme skupinu pre čakaciu listinu.", "Pridajte sa do skupiny čakacej listiny na WhatsAppe a získajte ako prví novinky, videá a prístup k testovacej verzii.", "Pridať sa do skupiny WhatsApp"],
+  hu: ["Megnyílt az OptiMOB WhatsApp-csoportja", "Csoportot hoztunk létre a várólistának.", "Csatlakozzon a várólista WhatsApp-csoportjához, hogy elsőként kapja meg a híreket, videókat és a tesztverzióhoz való hozzáférést.", "Csatlakozás a WhatsApp-csoporthoz"],
+  sv: ["OptiMOB:s WhatsApp-grupp är öppen", "Vi har skapat en grupp för väntelistan.", "Gå med i väntelistans grupp på WhatsApp och få nyheter, videor och tillgång till testversionen först av alla.", "Gå med i WhatsApp-gruppen"],
+  da: ["OptiMOBs WhatsApp-gruppe er åben", "Vi har oprettet en gruppe til ventelisten.", "Bliv medlem af ventelistens gruppe på WhatsApp, og få nyheder, videoer og adgang til testversionen før alle andre.", "Bliv medlem af WhatsApp-gruppen"],
+  nb: ["OptiMOBs WhatsApp-gruppe er åpen", "Vi har opprettet en gruppe for ventelisten.", "Bli med i ventelistegruppen på WhatsApp og få nyheter, videoer og tilgang til testversjonen før alle andre.", "Bli med i WhatsApp-gruppen"],
+  fi: ["OptiMOBin WhatsApp-ryhmä on avattu", "Loimme ryhmän odotuslistalle.", "Liity odotuslistan WhatsApp-ryhmään ja saat uutiset, videot ja pääsyn testiversioon ensimmäisten joukossa.", "Liity WhatsApp-ryhmään"],
+  mk: ["Групата на OptiMOB на WhatsApp е отворена", "Создадовме група за листата на чекање.", "Придружете се на групата на листата на чекање на WhatsApp и први добивајте новости, видеа и пристап до тест-верзијата.", "Придружи се на WhatsApp групата"],
+  bg: ["Групата на OptiMOB в WhatsApp е отворена", "Създадохме група за списъка с чакащи.", "Присъединете се към групата на списъка с чакащи в WhatsApp, за да получавате първи новини, видеа и достъп до тестовата версия.", "Присъединяване към групата в WhatsApp"],
+  sr: ["Група OptiMOB на WhatsApp-у је отворена", "Направили смо групу за листу чекања.", "Придружите се групи листе чекања на WhatsApp-у и први добијајте новости, видео-снимке и приступ тест-верзији.", "Придружи се WhatsApp групи"],
+  hr: ["Grupa OptiMOB na WhatsAppu je otvorena", "Napravili smo grupu za listu čekanja.", "Pridružite se grupi liste čekanja na WhatsAppu i prvi primajte novosti, videozapise i pristup testnoj verziji.", "Pridruži se WhatsApp grupi"],
+  he: ["קבוצת הוואטסאפ של OptiMOB פתוחה", "פתחנו קבוצה לרשימת ההמתנה.", "הצטרפו לקבוצת רשימת ההמתנה בוואטסאפ כדי לקבל ראשונים עדכונים, סרטונים וגישה לגרסת הניסיון.", "הצטרפות לקבוצת הוואטסאפ"],
+  fa: ["گروه واتساپ OptiMOB باز شد", "برای فهرست انتظار یک گروه ساختیم.", "به گروه فهرست انتظار در واتساپ بپیوندید تا اخبار، ویدیوها و دسترسی به نسخهٔ آزمایشی را زودتر از همه دریافت کنید.", "پیوستن به گروه واتساپ"],
+  ur: ["OptiMOB کا واٹس ایپ گروپ کھل گیا ہے", "ہم نے انتظار فہرست کے لیے ایک گروپ بنایا ہے۔", "واٹس ایپ پر انتظار فہرست کے گروپ میں شامل ہوں اور خبریں، ویڈیوز اور آزمائشی ورژن تک رسائی سب سے پہلے حاصل کریں۔", "واٹس ایپ گروپ میں شامل ہوں"],
+  hi: ["OptiMOB का WhatsApp ग्रुप खुल गया है", "हमने प्रतीक्षा सूची के लिए एक ग्रुप बनाया है।", "WhatsApp पर प्रतीक्षा सूची ग्रुप से जुड़ें और सबसे पहले खबरें, वीडियो और टेस्ट संस्करण की पहुँच पाएँ।", "WhatsApp ग्रुप से जुड़ें"],
+  bn: ["OptiMOB-এর WhatsApp গ্রুপ চালু হয়েছে", "অপেক্ষমাণ তালিকার জন্য আমরা একটি গ্রুপ তৈরি করেছি।", "WhatsApp-এ অপেক্ষমাণ তালিকার গ্রুপে যোগ দিন এবং সবার আগে খবর, ভিডিও ও পরীক্ষামূলক সংস্করণের অ্যাক্সেস পান।", "WhatsApp গ্রুপে যোগ দিন"],
+  id: ["Grup WhatsApp OptiMOB sudah dibuka", "Kami membuat grup untuk daftar tunggu.", "Gabung ke grup daftar tunggu di WhatsApp untuk mendapatkan kabar terbaru, video, dan akses versi uji coba lebih dulu.", "Gabung ke grup WhatsApp"],
+  ms: ["Kumpulan WhatsApp OptiMOB kini dibuka", "Kami telah mewujudkan kumpulan untuk senarai menunggu.", "Sertai kumpulan senarai menunggu di WhatsApp untuk mendapatkan berita, video dan akses versi percubaan lebih awal.", "Sertai kumpulan WhatsApp"],
+  th: ["กลุ่ม WhatsApp ของ OptiMOB เปิดแล้ว", "เราสร้างกลุ่มสำหรับรายชื่อรอแล้ว", "เข้าร่วมกลุ่มรายชื่อรอใน WhatsApp เพื่อรับข่าวสาร วิดีโอ และสิทธิ์ใช้เวอร์ชันทดลองก่อนใคร", "เข้าร่วมกลุ่ม WhatsApp"],
+  ja: ["OptiMOB の WhatsApp グループを開設しました", "ウェイティングリスト用のグループを作りました。", "WhatsApp のウェイティングリストグループに参加すると、最新情報や動画、テスト版へのアクセスをいち早くお届けします。", "WhatsApp グループに参加する"],
+  ko: ["OptiMOB WhatsApp 그룹이 열렸습니다", "대기자 명단을 위한 그룹을 만들었습니다.", "WhatsApp 대기자 명단 그룹에 참여하시면 소식, 영상, 테스트 버전 이용 기회를 가장 먼저 받아 보실 수 있습니다.", "WhatsApp 그룹 참여하기"],
+  sw: ["Kikundi cha WhatsApp cha OptiMOB kimefunguliwa", "Tumeunda kikundi kwa ajili ya orodha ya kusubiri.", "Jiunge na kikundi cha orodha ya kusubiri kwenye WhatsApp upate habari, video na ufikiaji wa toleo la majaribio kabla ya wengine.", "Jiunge na kikundi cha WhatsApp"],
+  fil: ["Bukas na ang WhatsApp group ng OptiMOB", "Gumawa kami ng group para sa waitlist.", "Sumali sa waitlist group sa WhatsApp para mauna sa mga balita, video at access sa test version.", "Sumali sa WhatsApp group"],
+};
+
+function caixaGrupo(lang: string, dir: string) {
+  const w = W[lang] ?? W.en;
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:6px 0 20px;background:#111313;border:1px solid #2A2F30;border-${dir === "rtl" ? "right" : "left"}:4px solid #25D366"><tr><td dir="${dir}" style="padding:18px 20px;text-align:${dir === "rtl" ? "right" : "left"}">
+      <p style="font-size:14px;line-height:1.6;color:#C9CDCB;margin:0 0 14px">${esc(w[2])}</p>
+      <a href="${WA_URL}" style="display:inline-block;background:#25D366;color:#0B1F12;font-weight:700;font-size:14px;text-decoration:none;padding:12px 18px">${esc(w[3])} →</a>
+    </td></tr></table>`;
+}
+
+function bloco(t: T, lang: string, dir: string, email: string, perfil: string, tag: string, cta: boolean) {
   const p2 = esc(t.p2).replace("{e}", `<b style="color:#EEF0EA">${esc(email)}</b>`).replace("{p}", esc(perfilEm(t, perfil)));
   return `<div ${LABEL}>${esc(t.label)}${tag}</div>
     <h1 style="font-size:24px;line-height:1.3;margin:12px 0 14px;font-weight:700">${esc(t.h1)}</h1>
     <p ${P}>${esc(t.p1)}</p>
     <p ${P}>${p2}</p>
+    ${caixaGrupo(lang, dir)}
     <p style="font-size:15px;line-height:1.6;color:#C9CDCB;margin:0 0 ${cta ? 24 : 14}px">${esc(t.p3)}</p>` +
     (cta ? `<a href="https://optimobsystem.com" style="display:inline-block;background:#3AA0FF;color:#1B1E1E;font-weight:700;font-size:14px;text-decoration:none;padding:12px 18px">optimobsystem.com</a>` : "");
 }
 
-function html(email: string, perfil: string, lang: string | null) {
-  const ts = lang ? [L[lang]] : [L.pt, L.en];
+// Corpo de um bloco do convite para o grupo (para quem se inscreveu antes de o grupo existir).
+function blocoConvite(t: T, lang: string, dir: string, tag: string, cta: boolean) {
+  const w = W[lang] ?? W.en;
+  return `<div ${LABEL}>${esc(t.label)}${tag}</div>
+    <h1 style="font-size:24px;line-height:1.3;margin:12px 0 14px;font-weight:700">${esc(w[1])}</h1>
+    ${caixaGrupo(lang, dir)}
+    <p style="font-size:15px;line-height:1.6;color:#C9CDCB;margin:0 0 ${cta ? 24 : 14}px">${esc(t.p3)}</p>` +
+    (cta ? `<a href="https://optimobsystem.com" style="display:inline-block;background:#3AA0FF;color:#1B1E1E;font-weight:700;font-size:14px;text-decoration:none;padding:12px 18px">optimobsystem.com</a>` : "");
+}
+
+type Tipo = "confirmacao" | "convite";
+
+function html(email: string, perfil: string, lang: string | null, tipo: Tipo = "confirmacao") {
+  const codes = lang ? [lang] : ["pt", "en"];
   const dir = lang && RTL.has(lang) ? "rtl" : "ltr";
-  const corpo = ts.map((t, i) =>
-    `<tr><td dir="${dir}" style="padding:${i ? 24 : 28}px 36px 8px;color:#EEF0EA;text-align:${dir === "rtl" ? "right" : "left"}">${bloco(t, email, perfil, lang ? "" : (i ? " · EN" : " · PT"), i === ts.length - 1)}</td></tr>`
-  ).join(`<tr><td style="padding:8px 36px 0"><div style="height:1px;background:#2A2F30"></div></td></tr>`);
+  const corpo = codes.map((c, i) => {
+    const t = L[c], tag = lang ? "" : (i ? " · EN" : " · PT"), last = i === codes.length - 1;
+    const inner = tipo === "convite" ? blocoConvite(t, c, dir, tag, last) : bloco(t, c, dir, email, perfil, tag, last);
+    return `<tr><td dir="${dir}" style="padding:${i ? 24 : 28}px 36px 8px;color:#EEF0EA;text-align:${dir === "rtl" ? "right" : "left"}">${inner}</td></tr>`;
+  }).join(`<tr><td style="padding:8px 36px 0"><div style="height:1px;background:#2A2F30"></div></td></tr>`);
   const corpoFinal = dir === "rtl" ? corpo.replace(/letter-spacing:3px;/g, "") : corpo; // espaçamento parte a escrita árabe
-  const pe = ts.map((t, i) => `<p dir="${dir}" style="font-size:12px;line-height:1.6;color:#8A918F;margin:0 0 ${i < ts.length - 1 ? 6 : 0}px;text-align:${dir === "rtl" ? "right" : "left"}">${esc(t.foot)}</p>`).join("");
+  const pe = codes.map((c, i) => `<p dir="${dir}" style="font-size:12px;line-height:1.6;color:#8A918F;margin:0 0 ${i < codes.length - 1 ? 6 : 0}px;text-align:${dir === "rtl" ? "right" : "left"}">${esc(L[c].foot)}</p>`).join("");
   return `<!doctype html><html lang="${lang ?? "pt"}" dir="${dir}"><body style="margin:0;background:#111313;padding:32px 16px;font-family:Helvetica,Arial,sans-serif">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
 <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#1B1E1E;border:1px solid #2A2F30">
@@ -386,14 +456,19 @@ function html(email: string, perfil: string, lang: string | null) {
 </table></td></tr></table></body></html>`;
 }
 
-function text(email: string, perfil: string, lang: string | null) {
-  const ts = lang ? [L[lang]] : [L.pt, L.en];
-  return ts.map((t) => `${t.h1}\n\n${t.p1}\n${t.p2.replace("{e}", email).replace("{p}", perfilEm(t, perfil))}\n${t.p3}`).join("\n\n---\n\n") +
-    "\n\nhttps://optimobsystem.com\n\n" + ts.map((t) => t.foot).join("\n");
+function text(email: string, perfil: string, lang: string | null, tipo: Tipo = "confirmacao") {
+  const codes = lang ? [lang] : ["pt", "en"];
+  return codes.map((c) => {
+    const t = L[c], w = W[c] ?? W.en;
+    const grupo = `${w[2]}\n${w[3]}: ${WA_URL}`;
+    return tipo === "convite" ? `${w[1]}\n\n${grupo}\n\n${t.p3}`
+      : `${t.h1}\n\n${t.p1}\n${t.p2.replace("{e}", email).replace("{p}", perfilEm(t, perfil))}\n\n${grupo}\n\n${t.p3}`;
+  }).join("\n\n---\n\n") + "\n\nhttps://optimobsystem.com\n\n" + codes.map((c) => L[c].foot).join("\n");
 }
 
-function assunto(lang: string | null) {
-  return lang ? L[lang].subject : `${L.pt.subject} · ${L.en.subject}`;
+function assunto(lang: string | null, tipo: Tipo = "confirmacao") {
+  const a = (c: string) => tipo === "convite" ? (W[c] ?? W.en)[0] : L[c].subject;
+  return lang ? a(lang) : `${a("pt")} · ${a("en")}`;
 }
 
 // Corre em segundo plano depois de responder ao webhook (Supabase Edge Runtime).
@@ -404,17 +479,17 @@ const TENTATIVAS = 5;
 
 // Envia com repetição: se a Resend responder 429 (demasiados pedidos) ou 5xx, espera e tenta outra vez.
 // O Idempotency-Key garante que uma repetição nunca gera um segundo email para a mesma inscrição.
-async function enviar(rec: { id?: string; email: string; perfil?: string; idioma?: string | null }) {
+async function enviar(rec: { id?: string; email: string; perfil?: string; idioma?: string | null }, tipo: Tipo = "confirmacao") {
   const lang = lingua(rec.idioma);
   const body = JSON.stringify({
     from: FROM,
     to: [rec.email],
     reply_to: REPLY_TO,
-    subject: assunto(lang),
-    html: html(rec.email, rec.perfil ?? "", lang),
-    text: text(rec.email, rec.perfil ?? "", lang),
+    subject: assunto(lang, tipo),
+    html: html(rec.email, rec.perfil ?? "", lang, tipo),
+    text: text(rec.email, rec.perfil ?? "", lang, tipo),
   });
-  const chave = `lista-espera-${rec.id ?? rec.email}`;
+  const chave = `${tipo === "convite" ? "convite-grupo" : "lista-espera"}-${rec.id ?? rec.email}`;
 
   for (let tentativa = 1; tentativa <= TENTATIVAS; tentativa++) {
     let estado = 0, detalhe = "";
@@ -429,7 +504,7 @@ async function enviar(rec: { id?: string; email: string; perfil?: string; idioma
         body,
       });
       if (r.ok) {
-        console.log("Enviado", rec.email, lang ?? "pt+en", "tentativa", tentativa);
+        console.log("Enviado", tipo, rec.email, lang ?? "pt+en", "tentativa", tentativa);
         return true;
       }
       estado = r.status;
@@ -460,11 +535,14 @@ Deno.serve(async (req) => {
 
   const payload = await req.json().catch(() => null);
   const rec = payload?.record;
-  if (payload?.type !== "INSERT" || payload?.table !== "lista_espera" || !rec?.email) {
+  // "INSERT": inscrição nova (webhook). "CONVITE_GRUPO": convite para o grupo do WhatsApp,
+  // enviado à mão (SQL) a quem se inscreveu antes de o grupo existir.
+  const tipo: Tipo | null = payload?.type === "INSERT" ? "confirmacao" : payload?.type === "CONVITE_GRUPO" ? "convite" : null;
+  if (!tipo || payload?.table !== "lista_espera" || !rec?.email) {
     return new Response("Ignorado", { status: 200 });
   }
 
-  const tarefa = enviar(rec);
+  const tarefa = enviar(rec, tipo);
   if (typeof EdgeRuntime !== "undefined" && EdgeRuntime?.waitUntil) {
     EdgeRuntime.waitUntil(tarefa);
     return new Response("Aceite", { status: 202 });
