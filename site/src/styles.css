@@ -270,16 +270,17 @@ input[type=range]:focus-visible{outline-offset:4px}
 .foot-brand b{display:block;font-weight:600}
 .foot-brand span,.foot-c{font-size:.66rem;letter-spacing:.16em;color:var(--ash);text-transform:uppercase}
 
-/* botão flutuante do grupo de WhatsApp */
-.wa-float{position:fixed;right:24px;bottom:24px;z-index:50;display:flex;align-items:center;gap:12px;min-height:56px;padding:0 20px 0 16px;background:#25D366;color:#0B1F12;text-decoration:none;box-shadow:0 10px 30px rgba(0,0,0,.35),0 0 0 1px rgba(0,0,0,.25);transition:transform .18s ease,box-shadow .18s ease}
-.wa-float:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.4),0 0 0 1px rgba(0,0,0,.25);color:#0B1F12}
-.wa-float:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
-.wa-float::after{content:"";position:absolute;inset:-6px;border:2px solid #25D366;opacity:0;animation:wa-pulse 2.8s ease-out 1.5s 3}
-@keyframes wa-pulse{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.18)}}
-.wa-txt{display:flex;flex-direction:column;line-height:1.15}
-.wa-txt b{font:700 15px/1.15 var(--display)}
-.wa-txt small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
-@media (max-width:640px){.wa-float{right:16px;bottom:16px;width:56px;height:56px;padding:0;justify-content:center}.wa-txt{display:none}}
+/* botão flutuante do grupo de WhatsApp: círculo; no computador mostra uma etiqueta ao passar o rato */
+.wa-float{position:fixed;right:24px;bottom:24px;z-index:50;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#25D366;color:#0B1F12;text-decoration:none;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .18s ease,box-shadow .18s ease}
+.wa-float:hover{transform:scale(1.06);box-shadow:0 14px 34px rgba(0,0,0,.4);color:#0B1F12}
+.wa-float:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+.wa-float::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid #25D366;opacity:0;animation:wa-pulse 2.8s ease-out 1.5s 3}
+@keyframes wa-pulse{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.25)}}
+.wa-txt{position:absolute;right:74px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;line-height:1.15;white-space:nowrap;background:var(--carbon);color:var(--bone);border:1px solid var(--steel);padding:9px 14px;opacity:0;pointer-events:none;transition:opacity .15s ease}
+.wa-float:hover .wa-txt,.wa-float:focus-visible .wa-txt{opacity:1}
+.wa-txt b{font:600 14px/1.2 var(--display)}
+.wa-txt small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
+@media (max-width:640px){.wa-float{right:16px;bottom:16px;width:56px;height:56px}.wa-txt{display:none}}
 .wl-wa{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:10px 14px;background:#25D366;color:#0B1F12!important;font:700 14px var(--display);text-decoration:none}
 .wl-wa:hover{filter:brightness(1.05)}
 
