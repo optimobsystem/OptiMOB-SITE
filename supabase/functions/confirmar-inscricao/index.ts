@@ -358,7 +358,7 @@ const LABEL = 'style="font-family:Courier New,monospace;font-size:11px;letter-sp
 
 // ---------------------------------------------------------------- grupo do WhatsApp
 // Link de convite do grupo da lista de espera (pode ser trocado sem mexer no código: secret WHATSAPP_GROUP_URL).
-const WA_URL = Deno.env.get("WHATSAPP_GROUP_URL") ?? "https://chat.whatsapp.com/SEU-CONVITE";
+const WA_URL = Deno.env.get("WHATSAPP_GROUP_URL") ?? "https://chat.whatsapp.com/DWgVTQjmWdYAj9T6ZWHYFd";
 
 // [assunto do convite, título do convite, parágrafo, botão]
 const W: Record<string, [string, string, string, string]> = {
