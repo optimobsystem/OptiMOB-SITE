@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <title>OptiMOB</title>
+  <rect width="128" height="128" rx="28" fill="#1B1E1E"/>
+  <g transform="translate(32.1 22) scale(0.3134)">
+    <circle cx="101.5" cy="101.5" r="89" fill="none" stroke="#EEF0EA" stroke-width="25"/>
+    <rect x="87.4" y="87.4" width="28.2" height="28.2" fill="#3AA0FF"/>
+    <rect x="3.4" y="237.8" width="154.4" height="16.4" fill="#3AA0FF"/>
+    <rect x="3.4" y="228.1" width="16.4" height="35.9" fill="#3AA0FF"/>
+    <rect x="157.8" y="224.7" width="42.7" height="42.7" fill="#3AA0FF"/>
+  </g>
+</svg>
