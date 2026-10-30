@@ -14,12 +14,12 @@
  * utilizador clicar em "Atualizar" no aviso do app (mensagem SKIP_WAITING) —
  * assim ninguém perde um modelo aberto a meio por um reload surpresa.
  */
-const VERSION = "ceebb6bd57"
+const VERSION = "0b6a39ed8e"
 const CACHE = 'optimob-' + VERSION
 const PRECACHE = [
   "./assets/html2canvas-CbD8-OUa.js",
   "./assets/index.es-wB8SPgCX.js",
-  "./assets/main-B-lGO8UL.js",
+  "./assets/main-Da0a32NG.js",
   "./assets/pdfBrand-DV36ZCfs.js",
   "./assets/pdfBrand-QNS6_PEG.css",
   "./assets/purify.es-7fJ1DZ6H.js",
