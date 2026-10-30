@@ -14,17 +14,17 @@
  * utilizador clicar em "Atualizar" no aviso do app (mensagem SKIP_WAITING) —
  * assim ninguém perde um modelo aberto a meio por um reload surpresa.
  */
-const VERSION = "a98b7d571e"
+const VERSION = "358b26c60e"
 const CACHE = 'optimob-' + VERSION
 const PRECACHE = [
-  "./assets/html2canvas-DetK4Sqy.js",
-  "./assets/index.es-DdF718nJ.js",
-  "./assets/main-bc3oESTP.js",
-  "./assets/pdfBrand-C32HR1_E.js",
-  "./assets/pdfBrand-QNS6_PEG.css",
+  "./assets/html2canvas-CLAu30Y1.js",
+  "./assets/index.es-BSfLdeJj.js",
+  "./assets/main-BbDAb0Ko.js",
+  "./assets/pdfBrand-82A1AgLE.js",
+  "./assets/pdfBrand-Bb6WFspD.css",
   "./assets/purify.es-7fJ1DZ6H.js",
+  "./assets/report-BJ2zCDjZ.js",
   "./assets/report-BMD4B06x.css",
-  "./assets/report-DJGkwHOz.js",
   "./favicon.svg",
   "./icons/apple-touch-icon.png",
   "./icons/icon-192.png",

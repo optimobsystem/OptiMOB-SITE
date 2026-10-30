@@ -14,9 +14,19 @@
     <meta name="apple-mobile-web-app-title" content="OptiMOB" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <title>OptiMOB — Furniture Design System</title>
-    <script type="module" crossorigin src="./assets/main-bc3oESTP.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/pdfBrand-C32HR1_E.js">
-    <link rel="stylesheet" crossorigin href="./assets/pdfBrand-QNS6_PEG.css">
+    <!-- Tema guardado: aplicado antes de pintar, pra não piscar escuro quando o escolhido é o claro. -->
+    <script>
+      try {
+        var t = localStorage.getItem('optimob-theme')
+        if (t === 'light') {
+          document.documentElement.dataset.theme = 'light'
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#F6F7F3')
+        }
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="./assets/main-BbDAb0Ko.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/pdfBrand-82A1AgLE.js">
+    <link rel="stylesheet" crossorigin href="./assets/pdfBrand-Bb6WFspD.css">
   </head>
   <body>
     <div id="root"></div>
