@@ -14,12 +14,12 @@
  * utilizador clicar em "Atualizar" no aviso do app (mensagem SKIP_WAITING) —
  * assim ninguém perde um modelo aberto a meio por um reload surpresa.
  */
-const VERSION = "9f75b19c5f"
+const VERSION = "5572e95577"
 const CACHE = 'optimob-' + VERSION
 const PRECACHE = [
   "./assets/html2canvas-DvbBEYtA.js",
   "./assets/index.es-DTqHBFYg.js",
-  "./assets/main-By7B-X2E.js",
+  "./assets/main-BVuAeSsg.js",
   "./assets/pdfBrand-5tYJ_JnB.css",
   "./assets/pdfBrand-BCHT5eaT.js",
   "./assets/purify.es-7fJ1DZ6H.js",
@@ -64,7 +64,9 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
+      // no-cache: revalida sempre (o GitHub Pages serve as páginas com max-age=600 e a
+      // página velha ficaria até 10 min a apontar para ficheiros antigos).
+      fetch(request, { cache: 'no-cache' })
         .then((response) => {
           const copy = response.clone()
           caches.open(CACHE).then((cache) => cache.put(request, copy))
